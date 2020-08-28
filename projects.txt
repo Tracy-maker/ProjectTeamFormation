@@ -1,0 +1,100 @@
+pro1
+plan
+you need plan
+pro1
+W 1 P 4 N 3 A 2
+pro2
+grass
+you need grass
+pro2
+W 1 P 2 N 3 A 4
+pro3
+computer
+you need computer
+pro3
+W 3 P 4 N 1 A 2
+pro4
+rainy
+you need rainy
+pro4
+W 4 P 2 N 1 A 4
+pro5
+Shine
+you need Shine
+pro5
+W 2 P 4 N 3 A 2
+pro6
+water
+you need water
+pro6
+W 3 P 2 N 2 A 4
+pro7
+chicken
+you need chicken
+pro7
+W 3 P 4 N 1 A 1
+pro8
+tree
+you need tree
+pro8
+W 1 P 2 N 3 A 4
+pro9
+home
+you need home
+pro9
+W 1 P 1 N 3 A 2
+pro10
+small
+you need small
+pro10
+W 1 P 2 N 1 A 1
+pro11
+big
+you need big
+pro11
+W 1 P 1 N 3 A 2
+pro12
+girl
+you need girl
+pro12
+W 1 P 2 N 3 A 1
+pro13
+river
+you need river
+pro13
+W 1 P 1 N 1 A 2
+pro14
+floor
+you need floor
+pro14
+W 1 P 1 N 3 A 4
+pro15
+plan
+you need plan
+pro15
+W 1 P 4 N 1 A 1
+pro16
+light
+you need light
+pro16
+W 1 P 1 N 3 A 1
+pro17
+big
+you need big
+pro17
+W 1 P 1 N 3 A 2
+pro18
+run
+you need run
+pro18
+W 1 P 2 N 3 A 4
+pro19
+eve
+you need eve
+pro19
+W 4 P 4 N 3 A 2
+pro20
+jump
+you need jump
+pro20
+W 1 P 1 N 3 A 4
