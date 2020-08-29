@@ -26,7 +26,7 @@ public class ProjectManager {
                     linesForProject.add(lines.get(i));
                 }
                 Project project = Project.fromStrings(linesForProject);
-                this.projects.put(project.getProjectOwnerID(), project);
+                this.projects.put(project.getProjectID(), project);
                 nextLineNumber+=5;
             }
         } catch (

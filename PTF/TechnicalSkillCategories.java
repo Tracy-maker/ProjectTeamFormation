@@ -61,10 +61,10 @@ public class TechnicalSkillCategories {
         //Line
         String[] components = line.split(" ");
         String id = components[0];
-        double w = Integer.parseInt(components[1]);
-        double p = Integer.parseInt(components[3]);
-        double n = Integer.parseInt(components[5]);
-        double a = Integer.parseInt(components[7]);
+        double w = Double.parseDouble(components[1]);
+        double p = Double.parseDouble(components[3]);
+        double n = Double.parseDouble(components[5]);
+        double a = Double.parseDouble(components[7]);
 
         return new TechnicalSkillCategories(p,n,a,w);
     }

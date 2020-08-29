@@ -248,9 +248,9 @@ public class TeamManager {
 
     public double standardDeviationForSatisfactoryPercentage() {
 
-        ArrayList<Double> percentages =new ArrayList<>();
+        ArrayList<Double> percentages = new ArrayList<>();
 
-        for(Team t:this.teams.values()){
+        for (Team t : this.teams.values()) {
             percentages.add(satisfactoryPercentage(t.getProjectId()));
         }
 
@@ -259,24 +259,24 @@ public class TeamManager {
 
     public double standardDeviationForShortfall() {
 
-        ArrayList<Double> shortFalls =new ArrayList<>();
+        ArrayList<Double> shortFalls = new ArrayList<>();
 
-        for(Team t:this.teams.values()){
+        for (Team t : this.teams.values()) {
             shortFalls.add(skillShortfall(t.getProjectId()));
         }
 
         return Utils.standardDeviation(shortFalls);
     }
 
-    public HashMap<String,Double> standardDeviationForSkillCompetency() {
+    public HashMap<String, Double> standardDeviationForSkillCompetency() {
 
-        ArrayList<Double> ws =new ArrayList<>();
-        ArrayList<Double> ps =new ArrayList<>();
-        ArrayList<Double> ns =new ArrayList<>();
-        ArrayList<Double> as =new ArrayList<>();
+        ArrayList<Double> ws = new ArrayList<>();
+        ArrayList<Double> ps = new ArrayList<>();
+        ArrayList<Double> ns = new ArrayList<>();
+        ArrayList<Double> as = new ArrayList<>();
 
-        for(Team t:this.teams.values()){
-            TechnicalSkillCategories skills=this.averageTechnicalSkill(t.getProjectId());
+        for (Team t : this.teams.values()) {
+            TechnicalSkillCategories skills = this.averageTechnicalSkill(t.getProjectId());
             ws.add(skills.getWeb());
             ps.add(skills.getProgramming());
             ns.add(skills.getNetworking());
@@ -284,13 +284,17 @@ public class TeamManager {
 
         }
 
-        HashMap<String,Double> result=new HashMap<>();
-        result.put("W",Utils.standardDeviation(ws));
-        result.put("P",Utils.standardDeviation(ps));
-        result.put("N",Utils.standardDeviation(ns));
-        result.put("A",Utils.standardDeviation(as));
+        HashMap<String, Double> result = new HashMap<>();
+        result.put("W", Utils.standardDeviation(ws));
+        result.put("P", Utils.standardDeviation(ps));
+        result.put("N", Utils.standardDeviation(ns));
+        result.put("A", Utils.standardDeviation(as));
 
         return result;
+    }
+
+    public boolean areAllTeamFormed() {
+        return teams.size() == projectManager.getAllProject().size();
     }
 }
 

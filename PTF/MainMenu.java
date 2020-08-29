@@ -10,7 +10,7 @@ public class MainMenu {
     static ProjectManager projectManager = new ProjectManager();
     static StudentManager studentManager = new StudentManager();
     static StudentPreferenceManager studentPreferenceManager = new StudentPreferenceManager();
-    static TeamManager teamManager = new TeamManager(studentManager,projectManager,studentPreferenceManager);
+    static TeamManager teamManager = new TeamManager(studentManager, projectManager, studentPreferenceManager);
 
 
     public static void main(String[] args) throws IOException {
@@ -34,6 +34,9 @@ public class MainMenu {
             System.out.println("E.  Add Student Preferences");
             System.out.println("F.  Shortlist Project");
             System.out.println("G.  Form Team");
+            if (teamManager.areAllTeamFormed()) {
+                System.out.println("H.  Print team metrics");
+            }
             System.out.println("N.  Exit ");
             System.out.println("  Please input you choice: ");
 
@@ -61,6 +64,13 @@ public class MainMenu {
                     break;
                 case "G":
                     formTeam();
+                    break;
+                case "H":
+                    if (teamManager.areAllTeamFormed()) {
+                        printMetrics();
+                    }else{
+                        System.out.println("please enter valid word for this menu.");
+                    }
                     break;
                 case "N":
                     System.out.println(" Thank you for using");
@@ -452,7 +462,7 @@ public class MainMenu {
         projectManager.saveProjectsToFile();
     }
 
-    static void formTeam() {
+    static void formTeam() throws IOException {
         Scanner sc = new Scanner(System.in);
         Project pro = null;
         while (true) {
@@ -460,7 +470,7 @@ public class MainMenu {
             String projectId = sc.nextLine();
             pro = projectManager.findProjectById(projectId);
             if (pro == null) {
-                System.out.println("This" + pro + " is not exist.");
+                System.out.println("This " + pro + " is not exist.");
             } else {
                 break;
             }
@@ -491,13 +501,39 @@ public class MainMenu {
             teamManager.validateStudentId(student1, student2, student3, student4);
 
         } catch (Exception e) {
-            System.out.println("invalid input");
+            System.out.println(e.getMessage());
+            return;
         }
 
         Team team = new Team(pro.getProjectID(), student1, student2, student3, student4);
         teamManager.addTeam(team);
+        teamManager.saveTeamsToFile();
+    }
 
+    static void printMetrics() {
+        Scanner sc = new Scanner(System.in);
 
+        System.out.println("Please enter project ID:");
+        String projectId = sc.nextLine();
+
+        if (teamManager.getTeamByProjectId(projectId) == null) {
+            System.out.println("Invaild project ID");
+            return;
+        }
+      TechnicalSkillCategories skillCategories=teamManager.averageTechnicalSkill(projectId);
+        System.out.println("Average skill competency");
+        System.out.println("Programming:  "+skillCategories.getProgramming());
+        System.out.println("Web:  "+skillCategories.getWeb());
+        System.out.println("Analytics:  "+skillCategories.getAnalytics());
+        System.out.println("Networking:  "+skillCategories.getNetworking());
+        System.out.println("\n");
+
+        System.out.println("Satisfactory percentage: ");
+        System.out.println(teamManager.satisfactoryPercentage(projectId)*100+"%");
+        System.out.println("\n");
+
+        System.out.println("Skill shortfall: ");
+        System.out.println(teamManager.skillShortfall(projectId));
     }
 }
 

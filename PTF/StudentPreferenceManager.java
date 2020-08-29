@@ -42,9 +42,7 @@ public class StudentPreferenceManager {
         TreeSet<StudentPreference> preferences = new TreeSet<>(
                 (StudentPreference pref1, StudentPreference pref2) -> pref2.getGrade() - pref1.getGrade()
         );
-        StudentPreference firstPref = preferences.first();
-        firstPref.getProjectId();
-
+       
         while (nextIndex < components.length) {
             String projectId = components[nextIndex];
             int grade = Integer.parseInt(components[nextIndex + 1]);
