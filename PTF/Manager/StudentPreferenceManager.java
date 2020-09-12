@@ -1,4 +1,6 @@
-package PTF;
+package PTF.Manager;
+
+import PTF.Model.StudentPreference;
 
 import java.io.*;
 import java.util.ArrayList;

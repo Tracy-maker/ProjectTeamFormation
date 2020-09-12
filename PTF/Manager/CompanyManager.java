@@ -1,4 +1,6 @@
-package PTF;
+package PTF.Manager;
+
+import PTF.Model.Company;
 
 import java.io.*;
 import java.util.HashMap;

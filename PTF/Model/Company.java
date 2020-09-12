@@ -1,4 +1,4 @@
-package PTF;
+package PTF.Model;
 
 public class Company {
     private String companyID;

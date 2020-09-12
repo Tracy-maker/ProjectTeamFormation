@@ -1,6 +1,8 @@
-package PTF;
+package PTF.Manager;
 
 import PTF.Exception.*;
+import PTF.Model.*;
+import PTF.Utils;
 
 import java.io.*;
 import java.util.*;

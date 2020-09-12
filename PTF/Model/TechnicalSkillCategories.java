@@ -1,6 +1,4 @@
-package PTF;
-
-import java.util.Arrays;
+package PTF.Model;
 
 public class TechnicalSkillCategories {
     private double Programming;

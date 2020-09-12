@@ -1,4 +1,4 @@
-package PTF;
+package PTF.Model;
 
 import java.util.ArrayList;
 

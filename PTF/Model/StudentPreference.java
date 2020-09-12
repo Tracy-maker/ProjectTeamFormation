@@ -1,4 +1,4 @@
-package PTF;
+package PTF.Model;
 
 public class StudentPreference {
     private String projectId;

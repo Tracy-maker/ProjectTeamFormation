@@ -1,4 +1,6 @@
-package PTF;
+package PTF.Manager;
+
+import PTF.Model.Project;
 
 import java.io.*;
 import java.util.ArrayList;
