@@ -73,7 +73,7 @@ public class TeamManager {
     public void validateAvailability(String studentId) throws InvalidMemberException {
         for (Team team : teams.values()) {
             Set<String> studentIds = team.getStudentIds();
-            if (studentIds.add(studentId)) {
+            if (studentIds.contains(studentId)) {
                 throw new InvalidMemberException(studentId);
             }
         }
@@ -229,7 +229,7 @@ public class TeamManager {
         for (String studentId : studentIds) {
             TreeSet<StudentPreference> preferences = this.preferenceManager.getPreferencesByStudentId(studentId);
             if (preferences == null) {
-                break;
+               continue;
             }
             Iterator<StudentPreference> preferenceIterator = preferences.iterator();
 
