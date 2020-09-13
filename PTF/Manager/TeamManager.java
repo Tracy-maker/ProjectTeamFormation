@@ -298,5 +298,8 @@ public class TeamManager {
     public boolean areAllTeamFormed() {
         return teams.size() == projectManager.getAllProject().size();
     }
+    public Collection<Team> getAllTeams() {
+        return teams.values();
+    }
 }
 

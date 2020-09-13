@@ -8,22 +8,8 @@ import java.util.*;
 
 public class MainMenu {
 
-    static CompanyManager companyManager = new CompanyManager();
-    static ProjectOwnerManager projectOwnerManager = new ProjectOwnerManager();
-    static ProjectManager projectManager = new ProjectManager();
-    static StudentManager studentManager = new StudentManager();
-    static StudentPreferenceManager studentPreferenceManager = new StudentPreferenceManager();
-    static TeamManager teamManager = new TeamManager(studentManager, projectManager, studentPreferenceManager);
-
 
     public static void main(String[] args) throws IOException {
-
-        companyManager.loadCompaniesFromFile();
-        projectOwnerManager.loadOwnersFromFile();
-        projectManager.loadProjectsFromFile();
-        studentManager.loadStudentsFromFile();
-        studentPreferenceManager.loadStudentPreferenceFromFile();
-        teamManager.loadTeamsFromFile();
 
         HashMap<String, Integer> projectPreferenceAnalytics = null;
         //Loop back to the main interface again
@@ -37,7 +23,7 @@ public class MainMenu {
             System.out.println("E.  Add Student Preferences");
             System.out.println("F.  Shortlist Project");
             System.out.println("G.  Form Team");
-            if (teamManager.areAllTeamFormed()) {
+            if (DataEntryPoint.getInstance().teamManager.areAllTeamFormed()) {
                 System.out.println("H.  Print team metrics");
             }
             System.out.println("N.  Exit ");
@@ -69,7 +55,7 @@ public class MainMenu {
                     formTeam();
                     break;
                 case "H":
-                    if (teamManager.areAllTeamFormed()) {
+                    if (DataEntryPoint.getInstance().teamManager.areAllTeamFormed()) {
                         printMetrics();
                     }else{
                         System.out.println("please enter valid word for this menu.");
@@ -101,7 +87,7 @@ public class MainMenu {
                 String ID = sc.nextLine();
 
 
-                if (companyManager.findCompanyById(ID) != null) {
+                if (DataEntryPoint.getInstance().companyManager.findCompanyById(ID) != null) {
                     System.out.println("Duplicate company ID, try again!");
                     System.out.println("Enter any key to begin adding information... Or press N to exit");
                     continue;
@@ -122,7 +108,7 @@ public class MainMenu {
 
                 //Put the information into the collection
                 try {
-                    companyManager.addCompany(c);
+                    DataEntryPoint.getInstance().companyManager.addCompany(c);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -131,7 +117,7 @@ public class MainMenu {
 
             }
         }
-        companyManager.saveCompaniesToFile();
+        DataEntryPoint.getInstance().companyManager.saveCompaniesToFile();
     }
 
     // Add information about Project Owner
@@ -150,7 +136,7 @@ public class MainMenu {
                 System.out.println(" Please input Project owner ID: ");
                 String ID = sc.nextLine();
 
-                if (projectOwnerManager.findProjectOwnerById(ID) != null) {
+                if (DataEntryPoint.getInstance().projectOwnerManager.findProjectOwnerById(ID) != null) {
                     System.out.println("Duplicate company ID, try again!");
                     System.out.println("Enter any key to begin adding information... Or press N to exit");
                     continue;
@@ -172,7 +158,7 @@ public class MainMenu {
 
                 //Put the information into the collection
                 try {
-                    projectOwnerManager.addProjectOwner(pO);
+                    DataEntryPoint.getInstance().projectOwnerManager.addProjectOwner(pO);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -181,7 +167,7 @@ public class MainMenu {
             }
 
         }
-        projectOwnerManager.saveProjectOwnersToFile();
+        DataEntryPoint.getInstance().projectOwnerManager.saveProjectOwnersToFile();
 
     }
 
@@ -201,7 +187,7 @@ public class MainMenu {
                 System.out.println(" Please input Project ID: ");
                 String PID = sc.nextLine();
 
-                if (projectManager.findProjectById(PID) != null) {
+                if (DataEntryPoint.getInstance().projectManager.findProjectById(PID) != null) {
                     System.out.println("Duplicate company ID, try again!");
                     System.out.println("Enter any key to begin adding information... Or press N to exit");
                     continue;
@@ -257,7 +243,7 @@ public class MainMenu {
 
                 //Put the information into the collection
                 try {
-                    projectManager.addProject(p);
+                    DataEntryPoint.getInstance().projectManager.addProject(p);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -265,7 +251,7 @@ public class MainMenu {
                 System.out.println("If you don't have information to added,please enter word -> n ");
             }
         }
-        projectManager.saveProjectsToFile();
+        DataEntryPoint.getInstance().projectManager.saveProjectsToFile();
     }
 
     //Create method about capture student personalities
@@ -278,7 +264,7 @@ public class MainMenu {
         int countD = 0;
 
         Scanner sc = new Scanner(System.in);
-        for (Student s : studentManager.getAllStudent()) {
+        for (Student s : DataEntryPoint.getInstance().studentManager.getAllStudent()) {
             System.out.println("We are collecting information for student " + s.getStudentID());
             System.out.println("Now put the student's personality.");
             System.out.println("There are four Types which include [A]---Director, [B]---Socialize, [C]---Thinker, [D]---Supporter," +
@@ -323,7 +309,7 @@ public class MainMenu {
                 }
                 boolean isValid = true;
                 for (String id : studentIDs) {
-                    if (studentManager.getStudentById(id) == null) {
+                    if (DataEntryPoint.getInstance().studentManager.getStudentById(id) == null) {
                         System.out.println("Student " + id + " does not exist! please input again.");
                         isValid = false;
                         break;
@@ -339,7 +325,7 @@ public class MainMenu {
             }
             s.setNoMatchPeople(list1);
         }
-        studentManager.saveStudentToFile();
+        DataEntryPoint.getInstance().studentManager.saveStudentToFile();
 
     }
 
@@ -363,7 +349,7 @@ public class MainMenu {
             studentID = sc.nextLine();
 
 
-            if (studentManager.getStudentById(studentID) == null) {
+            if (DataEntryPoint.getInstance().studentManager.getStudentById(studentID) == null) {
                 System.out.println("This student is not exited.");
                 continue;
             }
@@ -373,7 +359,7 @@ public class MainMenu {
                 while (true) {
                     System.out.println("please input the project number");
                     projectNumber = sc.nextLine();
-                    if (projectManager.findProjectById(projectNumber) == null) {
+                    if (DataEntryPoint.getInstance().projectManager.findProjectById(projectNumber) == null) {
                         System.out.println("Project doesn't exist,please input agaim!");
                     } else {
                         break;
@@ -398,7 +384,7 @@ public class MainMenu {
                 StudentPreference studentPreference = new StudentPreference();
                 studentPreference.setProjectId(projectNumber);
                 studentPreference.setGrade(sp);
-                studentPreferenceManager.addPreference(studentID, studentPreference);
+                DataEntryPoint.getInstance().studentPreferenceManager.addPreference(studentID, studentPreference);
 
                 //Analyze
                 Integer proGradeSum = preferenceAnalyze.get(projectNumber);
@@ -425,7 +411,7 @@ public class MainMenu {
             }
 
         }
-        studentPreferenceManager.saveToFile();
+        DataEntryPoint.getInstance().studentPreferenceManager.saveToFile();
         return preferenceAnalyze;
     }
 
@@ -440,7 +426,7 @@ public class MainMenu {
 
 
         //Sort the appropriate content
-        ArrayList<String> projectId = new ArrayList<String>(projectManager.getAllProjectId());
+        ArrayList<String> projectId = new ArrayList<String>(DataEntryPoint.getInstance().projectManager.getAllProjectId());
         projectId.sort(new Comparator<String>() {
             @Override
             public int compare(String k1, String k2) {
@@ -460,9 +446,9 @@ public class MainMenu {
         //Find the fount of information to deleted
         for (int i = 0; i < Math.min(5, projectId.size()); i++) {
             String badProjectId = projectId.get(i);
-            projectManager.deletedProjectId(badProjectId);
+            DataEntryPoint.getInstance().projectManager.deletedProjectId(badProjectId);
         }
-        projectManager.saveProjectsToFile();
+        DataEntryPoint.getInstance().projectManager.saveProjectsToFile();
     }
 
     static void formTeam() throws IOException {
@@ -471,7 +457,7 @@ public class MainMenu {
         while (true) {
             System.out.println("What project do want to form team for");
             String projectId = sc.nextLine();
-            pro = projectManager.findProjectById(projectId);
+            pro = DataEntryPoint.getInstance().projectManager.findProjectById(projectId);
             if (pro == null) {
                 System.out.println("This " + pro + " is not exist.");
             } else {
@@ -493,15 +479,15 @@ public class MainMenu {
         String student4 = sc.nextLine();
 
         try {
-            teamManager.validateNoLeader(student1, student2, student3, student4);
-            teamManager.validateRepeatedMember(student1, student2, student3, student4);
-            teamManager.validatePersonalityImbalance(student1, student2, student3, student4);
-            teamManager.validateConflict(student1, student2, student3, student4);
-            teamManager.validateAvailability(student1);
-            teamManager.validateAvailability(student2);
-            teamManager.validateAvailability(student3);
-            teamManager.validateAvailability(student4);
-            teamManager.validateStudentId(student1, student2, student3, student4);
+            DataEntryPoint.getInstance().teamManager.validateNoLeader(student1, student2, student3, student4);
+            DataEntryPoint.getInstance().teamManager.validateRepeatedMember(student1, student2, student3, student4);
+            DataEntryPoint.getInstance().teamManager.validatePersonalityImbalance(student1, student2, student3, student4);
+            DataEntryPoint.getInstance().teamManager.validateConflict(student1, student2, student3, student4);
+            DataEntryPoint.getInstance().teamManager.validateAvailability(student1);
+            DataEntryPoint.getInstance().teamManager.validateAvailability(student2);
+            DataEntryPoint.getInstance().teamManager.validateAvailability(student3);
+            DataEntryPoint.getInstance().teamManager.validateAvailability(student4);
+            DataEntryPoint.getInstance().teamManager.validateStudentId(student1, student2, student3, student4);
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -509,8 +495,8 @@ public class MainMenu {
         }
 
         Team team = new Team(pro.getProjectID(), student1, student2, student3, student4);
-        teamManager.addTeam(team);
-        teamManager.saveTeamsToFile();
+        DataEntryPoint.getInstance().teamManager.addTeam(team);
+        DataEntryPoint.getInstance(). teamManager.saveTeamsToFile();
     }
 
     static void printMetrics() {
@@ -519,11 +505,11 @@ public class MainMenu {
         System.out.println("Please enter project ID:");
         String projectId = sc.nextLine();
 
-        if (teamManager.getTeamByProjectId(projectId) == null) {
+        if (DataEntryPoint.getInstance().teamManager.getTeamByProjectId(projectId) == null) {
             System.out.println("Invaild project ID");
             return;
         }
-      TechnicalSkillCategories skillCategories=teamManager.averageTechnicalSkill(projectId);
+      TechnicalSkillCategories skillCategories=DataEntryPoint.getInstance().teamManager.averageTechnicalSkill(projectId);
         System.out.println("Average skill competency");
         System.out.println("Programming:  "+skillCategories.getProgramming());
         System.out.println("Web:  "+skillCategories.getWeb());
@@ -532,11 +518,11 @@ public class MainMenu {
         System.out.println("\n");
 
         System.out.println("Satisfactory percentage: ");
-        System.out.println(teamManager.satisfactoryPercentage(projectId)*100+"%");
+        System.out.println(DataEntryPoint.getInstance().teamManager.satisfactoryPercentage(projectId)*100+"%");
         System.out.println("\n");
 
         System.out.println("Skill shortfall: ");
-        System.out.println(teamManager.skillShortfall(projectId));
+        System.out.println(DataEntryPoint.getInstance().teamManager.skillShortfall(projectId));
     }
 }
 
