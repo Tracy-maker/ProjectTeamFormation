@@ -55,7 +55,7 @@ public class TeamGroupController implements Initializable {
     }
 
     @FXML
-    private void handleRadioButtonClick(ActionEvent event) {
+    private void handleRadioButtonClick(javafx.event.ActionEvent event) {
         RadioButton source = (RadioButton) event.getSource();
         String id = source.getId();
         selectedIndex = Integer.parseInt(id);
@@ -71,4 +71,6 @@ public class TeamGroupController implements Initializable {
         }
         return studentId;
     }
+
+
 }

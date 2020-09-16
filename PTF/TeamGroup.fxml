@@ -17,7 +17,7 @@
       <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
          <children>
             <TextField fx:id="textField0" editable="false" />
-            <RadioButton mnemonicParsing="false">
+            <RadioButton mnemonicParsing="false" onAction="#handleRadioButtonClick">
                <toggleGroup>
                   <ToggleGroup fx:id="RadioToggleGroup" />
                </toggleGroup>
@@ -30,7 +30,7 @@
       <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
          <children>
             <TextField fx:id="textField1" editable="false" />
-            <RadioButton mnemonicParsing="false" toggleGroup="$RadioToggleGroup" />
+            <RadioButton mnemonicParsing="false" onAction="#handleRadioButtonClick" toggleGroup="$RadioToggleGroup" />
          </children>
          <opaqueInsets>
             <Insets />
@@ -42,7 +42,7 @@
       <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
          <children>
             <TextField fx:id="textField2" editable="false" />
-            <RadioButton mnemonicParsing="false" toggleGroup="$RadioToggleGroup" />
+            <RadioButton mnemonicParsing="false" onAction="#handleRadioButtonClick" toggleGroup="$RadioToggleGroup" />
          </children>
          <opaqueInsets>
             <Insets />
@@ -51,7 +51,7 @@
       <HBox alignment="CENTER_LEFT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
          <children>
             <TextField fx:id="textField3" editable="false" />
-            <RadioButton mnemonicParsing="false" toggleGroup="$RadioToggleGroup" />
+            <RadioButton mnemonicParsing="false" onAction="#handleRadioButtonClick" toggleGroup="$RadioToggleGroup" />
          </children>
          <opaqueInsets>
             <Insets />
