@@ -10,9 +10,9 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextField;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
@@ -28,10 +28,67 @@ public class MainSceneController implements Initializable {
     @FXML
     private BarChart<?, ?> skillGapChart;
 
+    @FXML
+    private TeamGroupController teamGroup1Controller;
+
+    @FXML
+    private TeamGroupController teamGroup2Controller;
+
+    @FXML
+    private TeamGroupController teamGroup3Controller;
+
+    @FXML
+    private TeamGroupController teamGroup4Controller;
+
+    @FXML
+    private TeamGroupController teamGroup5Controller;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resource) {
         refreshMetrics();
+
+        Collection<Team> teams = DataEntryPoint.getInstance().teamManager.getAllTeams();
+        ArrayList<Team> teamArray = new ArrayList<>(teams);
+
+        if (teamArray.size() >= 1) {
+            teamGroup1Controller.populate(teamArray.get(0));
+        }
+        if (teamArray.size() >= 2) {
+            teamGroup2Controller.populate(teamArray.get(1));
+        }
+        if (teamArray.size() >= 3) {
+            teamGroup3Controller.populate(teamArray.get(2));
+        }
+        if (teamArray.size() >= 4) {
+            teamGroup4Controller.populate(teamArray.get(3));
+        }
+        if (teamArray.size() >= 5) {
+            teamGroup5Controller.populate(teamArray.get(4));
+        }
+
+    }
+    @FXML
+    private void handleSwap(){
+        ArrayList<String>selectedIds=new ArrayList<>();
+        if(teamGroup1Controller.getSelectedStudentId()!=null){
+            selectedIds.add(teamGroup1Controller.getSelectedStudentId());
+        }
+        if(teamGroup2Controller.getSelectedStudentId()!=null){
+            selectedIds.add(teamGroup2Controller.getSelectedStudentId());
+        }
+        if(teamGroup3Controller.getSelectedStudentId()!=null){
+            selectedIds.add(teamGroup3Controller.getSelectedStudentId());
+        }
+        if(teamGroup4Controller.getSelectedStudentId()!=null){
+            selectedIds.add(teamGroup4Controller.getSelectedStudentId());
+        }
+        if(teamGroup5Controller.getSelectedStudentId()!=null){
+            selectedIds.add(teamGroup5Controller.getSelectedStudentId());
+        }
+       if(selectedIds.size()!=2){
+
+       }
     }
 
     @FXML

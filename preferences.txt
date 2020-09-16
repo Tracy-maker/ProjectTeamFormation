@@ -1,8 +1,8 @@
 S5
-pro2 4 
+pr2 4
 S7
-pro1 4 
+pr1 4
 S1
-pro2 3 pro1 2 
+pr2 3 pr1 2
 S2
-pro2 4 pro1 1 
+pr2 4 pr1 1

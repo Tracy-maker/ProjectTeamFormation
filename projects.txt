@@ -1,10 +1,25 @@
-plan
-pro1
-i hate
-01
-W 1.0 P 4.0 N 3.0 A 3.0
-mam
-pro2
-i miss her
-02
-W 2.0 P 2.0 N 3.0 A 2.0
+qq
+pr1
+bad
+Ow1
+W 4 P 2 N 3 A 1
+qq
+pr2
+bad
+Ow2
+W 4 P 2 N 3 A 1
+ww
+pr3
+bad
+Ow1
+W 4 P 2 N 3 A 1
+ee
+pr4
+bad
+Ow1
+W 4 P 2 N 3 A 1
+LL
+pr5
+bad
+Ow1
+W 1 P 2 N 3 A 1

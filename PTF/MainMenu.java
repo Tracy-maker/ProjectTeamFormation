@@ -11,7 +11,6 @@ public class MainMenu {
 
     public static void main(String[] args) throws IOException {
 
-        HashMap<String, Integer> projectPreferenceAnalytics = null;
         //Loop back to the main interface again
         while (true) {
             //The information of the Menu
@@ -49,7 +48,7 @@ public class MainMenu {
                     studentPreference();
                     break;
                 case "F":
-                    preferenceProject(projectPreferenceAnalytics);
+                    preferenceProject();
                     break;
                 case "G":
                     formTeam();
@@ -416,14 +415,10 @@ public class MainMenu {
     }
 
     //The information of preference project
-    public static void preferenceProject(HashMap<String, Integer> projectPreferenceAnalytics) throws IOException {
+    public static void preferenceProject() throws IOException {
 
-        //please attention the rule!
-        if (projectPreferenceAnalytics == null) {
-            System.out.println("please run E before running F");
-            return;
-        }
-
+        StudentPreferenceManager prefManager = DataEntryPoint.getInstance().studentPreferenceManager;
+        HashMap<String, Integer> projectPreferenceAnalytics = prefManager.getProjectPreferenceStats();
 
         //Sort the appropriate content
         ArrayList<String> projectId = new ArrayList<String>(DataEntryPoint.getInstance().projectManager.getAllProjectId());

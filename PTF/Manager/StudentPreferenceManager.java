@@ -91,4 +91,22 @@ public class StudentPreferenceManager {
         return this.preferences.get(id);
     }
 
+    public HashMap<String, Integer> getProjectPreferenceStats() {
+        HashMap<String, Integer> stats = new HashMap<>();
+
+        for(TreeSet<StudentPreference> prefForStudent : preferences.values()) {
+            for (StudentPreference pref : prefForStudent) {
+                String projId = pref.getProjectId();
+                int grade = pref.getGrade();
+                Integer previous = stats.get(projId);
+                if (previous == null) {
+                    previous = 0;
+                }
+                Integer next = previous + grade;
+                stats.put(projId, next);
+            }
+        }
+
+        return stats;
+    }
 }
