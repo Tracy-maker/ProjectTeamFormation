@@ -68,27 +68,28 @@ public class MainSceneController implements Initializable {
         }
 
     }
+
     @FXML
-    private void handleSwap(){
-        ArrayList<String>selectedIds=new ArrayList<>();
-        if(teamGroup1Controller.getSelectedStudentId()!=null){
+    private void handleSwap() {
+        ArrayList<String> selectedIds = new ArrayList<>();
+        if (teamGroup1Controller.getSelectedStudentId() != null) {
             selectedIds.add(teamGroup1Controller.getSelectedStudentId());
         }
-        if(teamGroup2Controller.getSelectedStudentId()!=null){
+        if (teamGroup2Controller.getSelectedStudentId() != null) {
             selectedIds.add(teamGroup2Controller.getSelectedStudentId());
         }
-        if(teamGroup3Controller.getSelectedStudentId()!=null){
+        if (teamGroup3Controller.getSelectedStudentId() != null) {
             selectedIds.add(teamGroup3Controller.getSelectedStudentId());
         }
-        if(teamGroup4Controller.getSelectedStudentId()!=null){
+        if (teamGroup4Controller.getSelectedStudentId() != null) {
             selectedIds.add(teamGroup4Controller.getSelectedStudentId());
         }
-        if(teamGroup5Controller.getSelectedStudentId()!=null){
+        if (teamGroup5Controller.getSelectedStudentId() != null) {
             selectedIds.add(teamGroup5Controller.getSelectedStudentId());
         }
-       if(selectedIds.size()!=2){
+        if (selectedIds.size() != 2) {
 
-       }
+        }
     }
 
     @FXML
@@ -124,25 +125,18 @@ public class MainSceneController implements Initializable {
         TeamManager teamManager = DataEntryPoint.getInstance().teamManager;
         Collection<Team> teams = teamManager.getAllTeams();
 
-        XYChart.Series programingDataSet = new XYChart.Series();
-        programingDataSet.setName("programing");
-        XYChart.Series webDataSet = new XYChart.Series();
-        webDataSet.setName("web");
-        XYChart.Series networkDataSet = new XYChart.Series();
-        networkDataSet.setName("network");
-        XYChart.Series analyticsDataSet = new XYChart.Series();
-        analyticsDataSet.setName("analytics");
+        XYChart.Series averageCompetency = new XYChart.Series();
+        averageCompetency.setName("Average Competency");
 
         for (Team t : teams) {
             String projectId = t.getProjectId();
-            TechnicalSkillCategories averageCompetency = teamManager.averageTechnicalSkill(projectId);
-            programingDataSet.getData().add(new XYChart.Data<>("Team " + projectId, averageCompetency.getProgramming()));
-            webDataSet.getData().add(new XYChart.Data<>("Team " + projectId, averageCompetency.getWeb()));
-            networkDataSet.getData().add(new XYChart.Data<>("Team " + projectId, averageCompetency.getNetworking()));
-            analyticsDataSet.getData().add(new XYChart.Data<>("Team " + projectId, averageCompetency.getAnalytics()));
+            TechnicalSkillCategories technicalSkill = teamManager.averageTechnicalSkill(projectId);
+            double teamTechnicalSkill = (technicalSkill.getAnalytics() + technicalSkill.getNetworking() +
+                    technicalSkill.getWeb() + technicalSkill.getProgramming()) / 4;
+            averageCompetency.getData().add(new XYChart.Data<>("Team " + projectId, teamTechnicalSkill));
         }
         averageCompetencyChart.getData().removeAll();
-        averageCompetencyChart.getData().addAll(programingDataSet, webDataSet, networkDataSet, analyticsDataSet);
+        averageCompetencyChart.getData().addAll(averageCompetency);
     }
 
     private void drawSkillGapChart() {
