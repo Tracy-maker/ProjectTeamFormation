@@ -6,14 +6,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 public class TeamGroupController implements Initializable {
+
+    @FXML
+    private VBox background;
 
     @FXML
     private Label titleLabel;
@@ -30,7 +33,19 @@ public class TeamGroupController implements Initializable {
     @FXML
     public TextField textField3;
 
+    @FXML
+    private RadioButton radioButton0;
 
+    @FXML
+    private RadioButton radioButton1;
+
+    @FXML
+    private RadioButton radioButton2;
+
+    @FXML
+    private RadioButton radioButton3;
+
+    private RadioButton[] radioButtons;
     private TextField[] textFields;
     private Team team;
     private int selectedIndex = -1;
@@ -38,6 +53,8 @@ public class TeamGroupController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         textFields = new TextField[]{textField0, textField1, textField2, textField3};
+        radioButtons = new RadioButton[]{radioButton0, radioButton1, radioButton2, radioButton3};
+
     }
 
     public void populate(Team team) {
@@ -65,12 +82,34 @@ public class TeamGroupController implements Initializable {
         if (selectedIndex < 0 || selectedIndex > 3) {
             return null;
         }
-        String studentId=textFields[selectedIndex].getText();
-        if(studentId.isEmpty()){
+        String studentId = textFields[selectedIndex].getText();
+        if (studentId.isEmpty()) {
             return null;
         }
         return studentId;
     }
 
+    public boolean isEmptyChoose(){
+        if( selectedIndex < 0||selectedIndex>3){
+            return false;
+        }
+        String studentId = textFields[selectedIndex].getText();
+        return studentId.isEmpty();
+    }
+
+    public void clearSection() {
+        for (RadioButton button : radioButtons) {
+            button.setSelected(false);
+        }
+        selectedIndex = -1;
+    }
+
+    public Team getTeam(){
+        return team;
+    }
+
+    public void setBackgroundColor(String color){
+        background.setStyle("-fx-background-color: "+color);
+    }
 
 }

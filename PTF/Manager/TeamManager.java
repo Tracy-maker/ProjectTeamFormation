@@ -6,6 +6,7 @@ import PTF.Utils;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TeamManager {
     private final HashMap<String, Team> teams = new HashMap<>();
@@ -72,6 +73,12 @@ public class TeamManager {
         this.teams.put(team.getProjectId(), team);
     }
 
+    public void addStudentToTeam(String studentId,Team team) throws IOException {
+        team.addStudent(studentId);
+        saveTeamsToFile();
+
+    }
+
     public void validateAvailability(String studentId) throws InvalidMemberException {
         for (Team team : teams.values()) {
             Set<String> studentIds = team.getStudentIds();
@@ -106,6 +113,25 @@ public class TeamManager {
             }
         }
     }
+    public void validateConflict(Team team,String newStudentId) throws StudentConflictException {
+        HashSet<String> allIds=new HashSet<>(team.getStudentIds());
+        allIds.add(newStudentId);
+        List<Student> allStudents= allIds.stream().map((id) -> studentManager.getStudentById(id)).
+                collect(Collectors.toList());
+        for (Student student:allStudents){
+            ArrayList<String> conflicts=student.getNoMatchPeople();
+            if(conflicts==null){
+                continue;
+            }
+            for(String cId:conflicts){
+                if(allIds.contains(cId)){
+                    throw new StudentConflictException(student.getStudentID(),cId);
+                }
+            }
+
+        }
+
+    }
 
     public void validatePersonalityImbalance(String s1, String s2, String s3, String s4) throws PersonalityImbalanceException {
 
@@ -137,6 +163,11 @@ public class TeamManager {
         if (studentId.size() < 4) {
             throw new RepeatedMemberException();
 
+        }
+    }
+    public void validateRepeatedMember(Team team,String newStudentId) throws RepeatedMemberException {
+        if(team.getStudentIds().contains(newStudentId)){
+            throw new RepeatedMemberException();
         }
     }
 
@@ -174,6 +205,13 @@ public class TeamManager {
 
         }
     }
+    public void validateStudentId(String newStudentId) throws StudentNotFoundException {
+        Student student= studentManager.getStudentById(newStudentId);
+        if(student ==null){
+            throw new StudentNotFoundException(newStudentId);
+        }
+
+    }
 
     public TechnicalSkillCategories averageTechnicalSkill(String projectId) {
         Team team = this.teams.get(projectId);
@@ -201,6 +239,7 @@ public class TeamManager {
         TechnicalSkillCategories technicalSkillCategories = new TechnicalSkillCategories(p, n, a, w);
         return technicalSkillCategories;
     }
+
 
     public double skillShortfall(String projectId) {
         Project project = projectManager.findProjectById(projectId);
@@ -231,7 +270,7 @@ public class TeamManager {
         for (String studentId : studentIds) {
             TreeSet<StudentPreference> preferences = this.preferenceManager.getPreferencesByStudentId(studentId);
             if (preferences == null) {
-               continue;
+                continue;
             }
             Iterator<StudentPreference> preferenceIterator = preferences.iterator();
 
@@ -248,12 +287,30 @@ public class TeamManager {
         return satisfactorySum / 4.0;
     }
 
+    public double overallAverageCompetencyLevel(String projectId) {
+        Team team = this.teams.get(projectId);
+        Set<String> studentIds = team.getStudentIds();
+
+        double sum = 0;
+        for (String id : studentIds) {
+            Student student = studentManager.getStudentById(id);
+            TechnicalSkillCategories tech = student.getTechnicalSkillCategories();
+            sum += tech.getAnalytics();
+            sum += tech.getNetworking();
+            sum += tech.getProgramming();
+            sum += tech.getWeb();
+        }
+        return sum / 16;
+    }
+
     public double standardDeviationForSatisfactoryPercentage() {
 
         ArrayList<Double> percentages = new ArrayList<>();
 
         for (Team t : this.teams.values()) {
+
             percentages.add(satisfactoryPercentage(t.getProjectId()));
+
         }
 
         return Utils.standardDeviation(percentages);
@@ -278,7 +335,9 @@ public class TeamManager {
         ArrayList<Double> as = new ArrayList<>();
 
         for (Team t : this.teams.values()) {
+
             TechnicalSkillCategories skills = this.averageTechnicalSkill(t.getProjectId());
+
             ws.add(skills.getWeb());
             ps.add(skills.getProgramming());
             ns.add(skills.getNetworking());
@@ -287,6 +346,7 @@ public class TeamManager {
         }
 
         HashMap<String, Double> result = new HashMap<>();
+
         result.put("W", Utils.standardDeviation(ws));
         result.put("P", Utils.standardDeviation(ps));
         result.put("N", Utils.standardDeviation(ns));
@@ -295,11 +355,40 @@ public class TeamManager {
         return result;
     }
 
+    public double standardDeviationForOverallSkillCompetency() {
+        ArrayList<Double> competencies = new ArrayList<>();
+
+        for (Team t : this.teams.values()) {
+            competencies.add(overallAverageCompetencyLevel(t.getProjectId()));
+        }
+        return Utils.standardDeviation(competencies);
+    }
+
     public boolean areAllTeamFormed() {
         return teams.size() == projectManager.getAllProject().size();
     }
+
     public Collection<Team> getAllTeams() {
         return teams.values();
+    }
+
+    public void swapStudent(String studentA, String projectA, String studentB, String projectB) throws Exception {
+        Team teamA = getTeamByProjectId(projectA);
+        if (!teamA.getStudentIds().contains(studentA)) {
+            throw new Exception("Student " + studentA + " is not in " + projectA);
+        }
+        Team teamB = getTeamByProjectId(projectB);
+        if (!teamB.getStudentIds().contains(studentB)) {
+            throw new Exception("Student " + studentB + " is not in " + projectB);
+        }
+
+        teamA.getStudentIds().remove(studentA);
+        teamA.getStudentIds().add(studentB);
+
+        teamB.getStudentIds().remove(studentB);
+        teamB.getStudentIds().add(studentA);
+
+        saveTeamsToFile();
     }
 }
 

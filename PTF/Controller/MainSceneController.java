@@ -10,6 +10,7 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,12 +43,133 @@ public class MainSceneController implements Initializable {
 
     @FXML
     private TeamGroupController teamGroup5Controller;
+    private TeamGroupController[] allTeamGroupControllers;
 
+    @FXML
+    private TextField addStudentIdTextField;
 
     @Override
     public void initialize(URL location, ResourceBundle resource) {
         refreshMetrics();
 
+        refreshTeamBoxes();
+
+        teamGroup1Controller.setBackgroundColor("#FFB6C1");
+        teamGroup2Controller.setBackgroundColor("#53c0c9");
+        teamGroup3Controller.setBackgroundColor("#ffe375");
+        teamGroup4Controller.setBackgroundColor("#75baff");
+        teamGroup5Controller.setBackgroundColor("#E6E6FA");
+
+        allTeamGroupControllers = new TeamGroupController[]{
+                teamGroup1Controller, teamGroup2Controller, teamGroup3Controller, teamGroup4Controller, teamGroup5Controller
+        };
+    }
+
+    @FXML
+    private void handleSwap() {
+        ArrayList<String> selectedIds = new ArrayList<>();
+        ArrayList<String> selectedProjId = new ArrayList<>();
+        if (teamGroup1Controller.getSelectedStudentId() != null) {
+            selectedIds.add(teamGroup1Controller.getSelectedStudentId());
+            selectedProjId.add(teamGroup1Controller.getTeam().getProjectId());
+        }
+        if (teamGroup2Controller.getSelectedStudentId() != null) {
+            selectedIds.add(teamGroup2Controller.getSelectedStudentId());
+            selectedProjId.add(teamGroup2Controller.getTeam().getProjectId());
+        }
+        if (teamGroup3Controller.getSelectedStudentId() != null) {
+            selectedIds.add(teamGroup3Controller.getSelectedStudentId());
+            selectedProjId.add(teamGroup3Controller.getTeam().getProjectId());
+        }
+        if (teamGroup4Controller.getSelectedStudentId() != null) {
+            selectedIds.add(teamGroup4Controller.getSelectedStudentId());
+            selectedProjId.add(teamGroup4Controller.getTeam().getProjectId());
+        }
+        if (teamGroup5Controller.getSelectedStudentId() != null) {
+            selectedIds.add(teamGroup5Controller.getSelectedStudentId());
+            selectedProjId.add(teamGroup5Controller.getTeam().getProjectId());
+        }
+        teamGroup1Controller.clearSection();
+        teamGroup2Controller.clearSection();
+        teamGroup3Controller.clearSection();
+        teamGroup4Controller.clearSection();
+        teamGroup5Controller.clearSection();
+
+
+        if (selectedIds.size() != 2) {
+            Alert alert = new Alert(Alert.AlertType.NONE, "you should selected two student", ButtonType.OK);
+            alert.show();
+            return;
+        }
+
+        try {
+            String studentAId = selectedIds.get(0);
+            String studentBId = selectedIds.get(1);
+
+            String projAId = selectedProjId.get(0);
+            String projBId = selectedProjId.get(1);
+            DataEntryPoint.getInstance().teamManager.swapStudent(studentAId, projAId, studentBId, projBId);
+
+            refreshTeamBoxes();
+            refreshMetrics();
+
+        } catch (Exception e) {
+            String message = e.getMessage();
+            Alert alert = new Alert(Alert.AlertType.NONE, "you should selected two student", ButtonType.OK);
+        }
+    }
+
+    @FXML
+    private void handleAdd() {
+        String newStudentId = addStudentIdTextField.getText();
+        ArrayList<String> projectsSelectedByEmptyField = new ArrayList<>();
+        for (TeamGroupController controller : allTeamGroupControllers) {
+            if (controller.isEmptyChoose()) {
+                projectsSelectedByEmptyField.add(controller.getTeam().getProjectId());
+            }
+        }
+        if (projectsSelectedByEmptyField.size() != 1) {
+            Alert alert = new Alert(Alert.AlertType.NONE, "you can only select one empty field", ButtonType.OK);
+            alert.show();
+
+        }
+        String projectId = projectsSelectedByEmptyField.get(0);
+        TeamManager teamManager = DataEntryPoint.getInstance().teamManager;
+        Team t = teamManager.getTeamByProjectId(projectId);
+
+        teamGroup1Controller.clearSection();
+        teamGroup2Controller.clearSection();
+        teamGroup3Controller.clearSection();
+        teamGroup4Controller.clearSection();
+        teamGroup5Controller.clearSection();
+
+        try {
+            DataEntryPoint.getInstance().teamManager.validateRepeatedMember(t, newStudentId);
+            DataEntryPoint.getInstance().teamManager.validateConflict(t, newStudentId);
+            DataEntryPoint.getInstance().teamManager.validateAvailability(newStudentId);
+            DataEntryPoint.getInstance().teamManager.validateStudentId(newStudentId);
+            if (t.getStudentIds().size() == 3) {
+                ArrayList<String> existingStudentIds = new ArrayList<>(t.getStudentIds());
+                String student1 = existingStudentIds.get(0);
+                String student2 = existingStudentIds.get(1);
+                String student3 = existingStudentIds.get(2);
+                DataEntryPoint.getInstance().teamManager.validateNoLeader(student1, student2, student3, newStudentId);
+                DataEntryPoint.getInstance().teamManager.validatePersonalityImbalance(student1, student2, student3, newStudentId);
+            }
+
+            teamManager.addStudentToTeam(newStudentId,t);
+            refreshTeamBoxes();
+            refreshMetrics();
+
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.NONE, e.getMessage(), ButtonType.OK);
+            alert.show();
+
+        }
+
+    }
+
+    private void refreshTeamBoxes() {
         Collection<Team> teams = DataEntryPoint.getInstance().teamManager.getAllTeams();
         ArrayList<Team> teamArray = new ArrayList<>(teams);
 
@@ -69,38 +191,12 @@ public class MainSceneController implements Initializable {
 
     }
 
-    @FXML
-    private void handleSwap() {
-        ArrayList<String> selectedIds = new ArrayList<>();
-        if (teamGroup1Controller.getSelectedStudentId() != null) {
-            selectedIds.add(teamGroup1Controller.getSelectedStudentId());
-        }
-        if (teamGroup2Controller.getSelectedStudentId() != null) {
-            selectedIds.add(teamGroup2Controller.getSelectedStudentId());
-        }
-        if (teamGroup3Controller.getSelectedStudentId() != null) {
-            selectedIds.add(teamGroup3Controller.getSelectedStudentId());
-        }
-        if (teamGroup4Controller.getSelectedStudentId() != null) {
-            selectedIds.add(teamGroup4Controller.getSelectedStudentId());
-        }
-        if (teamGroup5Controller.getSelectedStudentId() != null) {
-            selectedIds.add(teamGroup5Controller.getSelectedStudentId());
-        }
-        if (selectedIds.size() != 2) {
-
-        }
-    }
-
-    @FXML
-    private void handleAdd() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "lalalal", ButtonType.OK);
-        alert.show();
-    }
-
     private void refreshMetrics() {
+
         drawSatisfactoryChart();
+
         drawAverageCompetencyChart();
+
         drawSkillGapChart();
     }
 
@@ -110,14 +206,17 @@ public class MainSceneController implements Initializable {
 
         XYChart.Series satisfactoryDataSet = new XYChart.Series();
 
-        for (
-                Team t : teams) {
+        for (Team t : teams) {
             String projectId = t.getProjectId();
             double satisfactory = teamManager.satisfactoryPercentage(projectId);
             satisfactoryDataSet.getData().add(new XYChart.Data<>("Team " + projectId, satisfactory));
         }
-        satisfactoryChart.getData().removeAll();
+        satisfactoryChart.getData().clear();
         satisfactoryChart.getData().addAll(satisfactoryDataSet);
+        String title = "%Getting 1st and 2nd preferences";
+        double std = DataEntryPoint.getInstance().teamManager.standardDeviationForSatisfactoryPercentage();
+        String stdStr = String.format("%.2f", std);
+        satisfactoryChart.setTitle(title + "\rStd Dev= " + stdStr);
 
     }
 
@@ -135,8 +234,12 @@ public class MainSceneController implements Initializable {
                     technicalSkill.getWeb() + technicalSkill.getProgramming()) / 4;
             averageCompetency.getData().add(new XYChart.Data<>("Team " + projectId, teamTechnicalSkill));
         }
-        averageCompetencyChart.getData().removeAll();
+        averageCompetencyChart.getData().clear();
         averageCompetencyChart.getData().addAll(averageCompetency);
+        String title = "Average Competency Level";
+        double std = DataEntryPoint.getInstance().teamManager.standardDeviationForOverallSkillCompetency();
+        String stdStr = String.format("%.2f", std);
+        averageCompetencyChart.setTitle(title + "\rStd Dev= " + stdStr);
     }
 
     private void drawSkillGapChart() {
@@ -151,7 +254,12 @@ public class MainSceneController implements Initializable {
             double skillGap = teamManager.skillShortfall(projectId);
             skillGapSet.getData().add(new XYChart.Data<>("Team " + projectId, skillGap));
         }
-        skillGapChart.getData().removeAll();
+        skillGapChart.getData().clear();
         skillGapChart.getData().addAll(skillGapSet);
+
+        String title = "Skill Gap";
+        double std = DataEntryPoint.getInstance().teamManager.standardDeviationForShortfall();
+        String stdStr = String.format("%.2f", std);
+        skillGapChart.setTitle(title + "\rStd Dev= " + stdStr);
     }
 }

@@ -1,7 +1,6 @@
 package PTF.Model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Team {
     private String projectId;
@@ -16,16 +15,19 @@ public class Team {
         this.studentIds.add(student4);
 
     }
+
+    public Team(String projectId, List<String> studentIds) {
+        this.projectId=projectId;
+        this.studentIds=new HashSet<String>(studentIds);
+    }
 //pro 01 02 03 04
 
     public static Team fromString(String line) {
         String[] components = line.split(" ");
         String project = components[0];
-        String s1 = components[1];
-        String s2 = components[2];
-        String s3 = components[3];
-        String s4 = components[4];
-        return new Team(project, s1, s2, s3, s4);
+        ArrayList<String>studentIds=new ArrayList<>(Arrays.asList(components));
+        studentIds.remove(0);
+        return new Team(project, studentIds);
     }
 
 
@@ -43,5 +45,12 @@ public class Team {
 
     public void setStudentIds(Set<String> studentIds) {
         this.studentIds = (HashSet<String>) studentIds;
+    }
+
+    public void addStudent(String studentId){
+        if(studentIds.size()>=4){
+            return;
+        }
+        this.studentIds.add(studentId);
     }
 }

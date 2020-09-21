@@ -124,7 +124,9 @@ public class MainMenu {
 
         //Input information about your choice
         System.out.println("----Welcome to add information about Project Owner----");
+
         System.out.println("Enter any key to begin adding information... Or press N to exit");
+
         while (true) {
             Scanner sc = new Scanner(System.in);
             String choice = sc.nextLine();
@@ -176,6 +178,7 @@ public class MainMenu {
         //Input information about your choice
         System.out.println("---Welcome to add information about Project---");
         System.out.println("Enter any key to begin adding information... Or press N to exit");
+
         while (true) {
             Scanner sc = new Scanner(System.in);
             String choice = sc.nextLine();
@@ -506,10 +509,9 @@ public class MainMenu {
         }
       TechnicalSkillCategories skillCategories=DataEntryPoint.getInstance().teamManager.averageTechnicalSkill(projectId);
         System.out.println("Average skill competency");
-        System.out.println("Programming:  "+skillCategories.getProgramming());
-        System.out.println("Web:  "+skillCategories.getWeb());
-        System.out.println("Analytics:  "+skillCategories.getAnalytics());
-        System.out.println("Networking:  "+skillCategories.getNetworking());
+
+        System.out.println((skillCategories.getAnalytics()+skillCategories.getWeb()+
+                skillCategories.getProgramming()+skillCategories.getNetworking())/4);
         System.out.println("\n");
 
         System.out.println("Satisfactory percentage: ");
