@@ -21,9 +21,9 @@ public class DataEntryPoint {
 
     private DataEntryPoint() {
         try {
-            companyManager.loadCompaniesFromFile();
+          //  companyManager.loadCompaniesFromFile();
             projectOwnerManager.loadOwnersFromFile();
-            projectManager.loadProjectsFromFile();
+          //  projectManager.loadProjectsFromFile();
             studentManager.loadStudentsFromFile();
             studentPreferenceManager.loadStudentPreferenceFromFile();
             teamManager.loadTeamsFromFile();

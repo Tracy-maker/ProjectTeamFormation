@@ -3,6 +3,7 @@ package PTF.Manager;
 import PTF.Model.ProjectOwner;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class ProjectOwnerManager {
@@ -51,6 +52,9 @@ public class ProjectOwnerManager {
             throw new Exception("Duplicate project owner id");
         }
         this.projectOwners.put(projectOwner.getProjectOwnerID(), projectOwner);
+    }
+    public Collection<ProjectOwner> getAllProjectOwners(){
+       return this.projectOwners.values();
     }
 }
 

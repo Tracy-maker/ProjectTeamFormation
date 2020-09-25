@@ -1,5 +1,7 @@
 package PTF.Model;
 
+import java.util.Collection;
+
 public class ProjectOwner {
     private String firstName;
     private String surname;
@@ -68,12 +70,14 @@ public class ProjectOwner {
 
     public static ProjectOwner fromString(String line) {
         String[] components = line.split(",");
-        String firstName = components[0];
-        String surname = components[1];
-        String projectOwnerId=components[2];
+        String projectOwnerId = components[0];
+        String firstName = components[1];
+        String surname = components[2];
         String role = components[3];
         String email = components[4];
         String companyId = components[5];
-        return new ProjectOwner(firstName, surname, projectOwnerId,role, email, companyId);
+        return new ProjectOwner(firstName, surname, projectOwnerId, role, email, companyId);
     }
+
+
 }

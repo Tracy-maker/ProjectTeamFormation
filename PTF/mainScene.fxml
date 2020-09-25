@@ -12,53 +12,65 @@
 
 <AnchorPane prefHeight="610.0" prefWidth="1114.0" style="-fx-background-color: #FFFAF0;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="PTF.Controller.MainSceneController">
    <children>
-      <HBox focusTraversable="true" layoutY="-9.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="10.0">
+      <HBox focusTraversable="true" layoutY="-9.0" spacing="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
          <children>
-            <fx:include fx:id="teamGroup1" source="TeamGroup.fxml" />
-            <fx:include fx:id="teamGroup2" source="TeamGroup.fxml" />
-            <fx:include fx:id="teamGroup3" source="TeamGroup.fxml" />
-            <fx:include fx:id="teamGroup4" source="TeamGroup.fxml" />
-            <fx:include fx:id="teamGroup5" source="TeamGroup.fxml" />
+            <fx:include fx:id="teamGroup1" maxWidth="1.7976931348623157E308" source="TeamGroup.fxml" HBox.hgrow="ALWAYS" />
+            <fx:include fx:id="teamGroup2" maxWidth="1.7976931348623157E308" source="TeamGroup.fxml" HBox.hgrow="ALWAYS" />
+            <fx:include fx:id="teamGroup3" maxWidth="1.7976931348623157E308" source="TeamGroup.fxml" HBox.hgrow="ALWAYS" />
+            <fx:include fx:id="teamGroup4" maxWidth="1.7976931348623157E308" source="TeamGroup.fxml" HBox.hgrow="ALWAYS" />
+            <fx:include fx:id="teamGroup5" maxWidth="1.7976931348623157E308" source="TeamGroup.fxml" HBox.hgrow="ALWAYS" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </HBox>
-      <HBox layoutX="41.0" layoutY="383.0" prefHeight="269.0" prefWidth="1122.0">
+      <HBox layoutX="41.0" layoutY="383.0" prefHeight="269.0" prefWidth="1122.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
          <children>
-            <BarChart fx:id="satisfactoryChart" alternativeColumnFillVisible="true" prefHeight="269.0" prefWidth="338.0" title="\\\%Getting 1st and 2nd preferences" HBox.hgrow="ALWAYS">
+            <BarChart fx:id="satisfactoryChart" alternativeColumnFillVisible="true" maxWidth="1.7976931348623157E308" title="\\\%Getting 1st and 2nd preferences" HBox.hgrow="ALWAYS">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>
               <yAxis>
                 <NumberAxis side="LEFT" />
               </yAxis>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </BarChart>
-            <BarChart fx:id="averageCompetencyChart" alternativeColumnFillVisible="true" prefHeight="269.0" prefWidth="369.0" title="Average Competency Level" HBox.hgrow="ALWAYS">
+            <BarChart fx:id="averageCompetencyChart" alternativeColumnFillVisible="true" maxWidth="1.7976931348623157E308" title="Average Competency Level" HBox.hgrow="ALWAYS">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>
               <yAxis>
                 <NumberAxis side="LEFT" />
               </yAxis>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </BarChart>
-            <BarChart fx:id="skillGapChart" alternativeColumnFillVisible="true" prefHeight="269.0" prefWidth="420.0" title="Skill Gap">
+            <BarChart fx:id="skillGapChart" alternativeColumnFillVisible="true" maxWidth="1.7976931348623157E308" title="Skill Gap" HBox.hgrow="ALWAYS">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>
               <yAxis>
                 <NumberAxis side="LEFT" />
               </yAxis>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </BarChart>
          </children>
       </HBox>
-      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="75.0" layoutY="304.0" prefHeight="37.0" prefWidth="95.0" style="-fx-background-color: #D3D3D3;" text="Student ID" AnchorPane.bottomAnchor="311.0" AnchorPane.leftAnchor="75.0" AnchorPane.rightAnchor="993.0" AnchorPane.topAnchor="304.0">
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="64.0" layoutY="306.0" prefHeight="37.0" prefWidth="95.0" style="-fx-background-color: #D3D3D3;" text="Student ID" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="306.0">
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </Label>
-      <TextField fx:id="addStudentIdTextField" layoutX="195.0" layoutY="309.0" prefHeight="27.0" prefWidth="142.0" AnchorPane.bottomAnchor="316.0" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="826.0" AnchorPane.topAnchor="309.0" />
-      <Button layoutX="384.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleAdd" prefHeight="27.0" prefWidth="80.0" text="Add" AnchorPane.bottomAnchor="314.0" AnchorPane.leftAnchor="384.0" AnchorPane.rightAnchor="699.0" AnchorPane.topAnchor="311.0" />
-      <Button layoutX="857.0" layoutY="308.0" mnemonicParsing="false" onAction="#handleSwap" prefHeight="27.0" prefWidth="91.0" text="Swap" AnchorPane.bottomAnchor="317.0" AnchorPane.leftAnchor="857.0" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="308.0" />
+      <TextField fx:id="addStudentIdTextField" layoutX="195.0" layoutY="309.0" maxWidth="1.7976931348623157E308" prefHeight="27.0" AnchorPane.leftAnchor="195.0" AnchorPane.topAnchor="309.0" />
+      <Button layoutX="384.0" layoutY="311.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAdd" prefHeight="27.0" text="Add" AnchorPane.leftAnchor="384.0" AnchorPane.topAnchor="311.0" />
+      <Button layoutX="857.0" layoutY="308.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSwap" prefHeight="27.0" text="Swap" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="308.0" />
    </children>
 </AnchorPane>

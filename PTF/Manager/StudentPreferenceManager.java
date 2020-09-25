@@ -109,4 +109,7 @@ public class StudentPreferenceManager {
 
         return stats;
     }
+    public HashMap<String,TreeSet<StudentPreference>>getAllPreferences(){
+        return this.preferences;
+    }
 }

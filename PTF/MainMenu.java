@@ -2,7 +2,6 @@ package PTF;
 
 import PTF.Manager.*;
 import PTF.Model.*;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -116,7 +115,7 @@ public class MainMenu {
 
             }
         }
-        DataEntryPoint.getInstance().companyManager.saveCompaniesToFile();
+      //  DataEntryPoint.getInstance().companyManager.saveCompaniesToFile();
     }
 
     // Add information about Project Owner
@@ -253,7 +252,7 @@ public class MainMenu {
                 System.out.println("If you don't have information to added,please enter word -> n ");
             }
         }
-        DataEntryPoint.getInstance().projectManager.saveProjectsToFile();
+      //  DataEntryPoint.getInstance().projectManager.saveProjectsToFile();
     }
 
     //Create method about capture student personalities
@@ -446,7 +445,7 @@ public class MainMenu {
             String badProjectId = projectId.get(i);
             DataEntryPoint.getInstance().projectManager.deletedProjectId(badProjectId);
         }
-        DataEntryPoint.getInstance().projectManager.saveProjectsToFile();
+      //  DataEntryPoint.getInstance().projectManager.saveProjectsToFile();
     }
 
     static void formTeam() throws IOException {
