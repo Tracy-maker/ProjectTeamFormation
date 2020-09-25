@@ -167,7 +167,7 @@ public class MainMenu {
             }
 
         }
-        DataEntryPoint.getInstance().projectOwnerManager.saveProjectOwnersToFile();
+     //   DataEntryPoint.getInstance().projectOwnerManager.saveProjectOwnersToFile();
 
     }
 
@@ -326,7 +326,7 @@ public class MainMenu {
             }
             s.setNoMatchPeople(list1);
         }
-        DataEntryPoint.getInstance().studentManager.saveStudentToFile();
+     //   DataEntryPoint.getInstance().studentManager.saveStudentToFile();
 
     }
 

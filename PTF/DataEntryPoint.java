@@ -22,9 +22,9 @@ public class DataEntryPoint {
     private DataEntryPoint() {
         try {
           //  companyManager.loadCompaniesFromFile();
-            projectOwnerManager.loadOwnersFromFile();
+          //  projectOwnerManager.loadOwnersFromFile();
           //  projectManager.loadProjectsFromFile();
-            studentManager.loadStudentsFromFile();
+          //  studentManager.loadStudentsFromFile();
             studentPreferenceManager.loadStudentPreferenceFromFile();
             teamManager.loadTeamsFromFile();
         } catch(Exception e) {

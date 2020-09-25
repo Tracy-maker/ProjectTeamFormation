@@ -72,12 +72,13 @@ public class ProjectManager {
                 double network = result.getDouble("network_level");
                 double analysis = result.getDouble("analysis_level");
                 TechnicalSkillCategories tech = new TechnicalSkillCategories(programming, network, analysis, web);
+                connection.close();
                 p = new Project(title, id, description, tech, projectOwnerId);
             }
             connection.close();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
-
+return null;
         }
         return p;
     }
@@ -137,7 +138,6 @@ public class ProjectManager {
                 double network = result.getDouble("network_level");
                 double analysis = result.getDouble("analysis_level");
                 TechnicalSkillCategories tech = new TechnicalSkillCategories(programming, network, analysis, web);
-                connection.close();
                 Project p = new Project( title,id, description, tech, projectOwnerId);
                 projects.add(p);
             }
