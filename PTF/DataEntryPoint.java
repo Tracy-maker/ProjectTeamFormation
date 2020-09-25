@@ -26,7 +26,7 @@ public class DataEntryPoint {
           //  projectManager.loadProjectsFromFile();
           //  studentManager.loadStudentsFromFile();
          //   studentPreferenceManager.loadStudentPreferenceFromFile();
-            teamManager.loadTeamsFromFile();
+          //  teamManager.loadTeamsFromFile();
         } catch(Exception e) {
             e.printStackTrace();
         }

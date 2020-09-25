@@ -493,7 +493,7 @@ public class MainMenu {
 
         Team team = new Team(pro.getProjectID(), student1, student2, student3, student4);
         DataEntryPoint.getInstance().teamManager.addTeam(team);
-        DataEntryPoint.getInstance(). teamManager.saveTeamsToFile();
+       // DataEntryPoint.getInstance(). teamManager.saveTeamsToFile();
     }
 
     static void printMetrics() {

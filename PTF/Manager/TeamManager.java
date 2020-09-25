@@ -4,12 +4,15 @@ import PTF.Exception.*;
 import PTF.Model.*;
 import PTF.Utils;
 
-import java.io.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class TeamManager {
-    private final HashMap<String, Team> teams = new HashMap<>();
+    //  private final HashMap<String, Team> teams = new HashMap<>();
 
     private final StudentManager studentManager;
     private final ProjectManager projectManager;
@@ -21,71 +24,144 @@ public class TeamManager {
         this.preferenceManager = preferenceManager;
     }
 
-    public void loadTeamsFromFile() throws IOException {
+//    public void loadTeamsFromFile() throws IOException {
+//
+//        try {
+//            //1.open file
+//            BufferedReader reader = new BufferedReader(new FileReader("selections.txt"));
+//            //2.read lines
+//            String line = null;
+//
+//            while ((line = reader.readLine()) != null) {
+//                Team team = Team.fromString(line);
+//                this.teams.put(team.getProjectId(), team);
+//            }
+//        } catch (FileNotFoundException e) {
+//            // Do nothing
+//        }
+//    }
+//
+//
+//    //pro1   ---key
+//    //studentId ----value
+//
+//    public void saveTeamsToFile() throws IOException {
+//
+//        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("selections.txt"));
+//        Collection<Team> allTeams = this.teams.values();
+//        for (Team t : allTeams) {
+//            StringBuilder sb = new StringBuilder();
+//            sb.append(t.getProjectId()).append(" ");//{12,12,21}
+//
+//            for (String s : t.getStudentIds()) {
+//                sb.append(s).append(" ");
+//            }
+////            sb.append(String.join(" ",t.getStudentIds()));
+//
+//            //Write information about Project on the files
+//            bufferedWriter.write(sb.toString());
+//            bufferedWriter.newLine();
+//            bufferedWriter.flush();
+//        }
+//        bufferedWriter.close();
+//    }
 
+
+    public Team getTeamByProjectId(String projectId) {
+        Connection connection = DBHelper.connection();
+        ArrayList<String> studentIds = new ArrayList<>();
         try {
-            //1.open file
-            BufferedReader reader = new BufferedReader(new FileReader("selections.txt"));
-            //2.read lines
-            String line = null;
-
-            while ((line = reader.readLine()) != null) {
-                Team team = Team.fromString(line);
-                this.teams.put(team.getProjectId(), team);
+            String sql = "SELECT id FROM students WHERE teamId = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, projectId);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                String studentId = result.getString("id");
+                studentIds.add(studentId);
             }
-        } catch (FileNotFoundException e) {
-            // Do nothing
-        }
-    }
 
-
-    //pro1   ---key
-    //studentId ----value
-
-    public void saveTeamsToFile() throws IOException {
-
-        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("selections.txt"));
-        Collection<Team> allTeams = this.teams.values();
-        for (Team t : allTeams) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(t.getProjectId()).append(" ");//{12,12,21}
-
-            for (String s : t.getStudentIds()) {
-                sb.append(s).append(" ");
+        } catch (SQLException err) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-//            sb.append(String.join(" ",t.getStudentIds()));
-
-            //Write information about Project on the files
-            bufferedWriter.write(sb.toString());
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            err.printStackTrace();
         }
-        bufferedWriter.close();
-    }
-
-
-    public Team getTeamByProjectId(String id) {
-        return teams.get(id);
+        return new Team(projectId, studentIds);
     }
 
 
     public void addTeam(Team team) {
-        this.teams.put(team.getProjectId(), team);
+        Connection connection = DBHelper.connection();
+        try {
+            String projId = team.getProjectId();
+            String sql = "INSERT INTO teams(project_id)VALUES(?)";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, projId);
+            statement.executeUpdate();
+
+            for (String studentId : team.getStudentIds()) {
+                sql = "UPDATE students SET teamId= ? WHERE students.id=?";
+                statement = connection.prepareStatement(sql);
+                statement.setString(1, projId);
+                statement.setString(2, studentId);
+                statement.executeUpdate();
+            }
+
+        } catch (SQLException throwables) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void addStudentToTeam(String studentId, Team team) throws IOException {
+    public void addStudentToTeam(String studentId, Team team) {
         team.addStudent(studentId);
-        saveTeamsToFile();
-
+        Connection connection = DBHelper.connection();
+        try {
+            String sql = "UPDATE students SET teamId= ? WHERE students.id= ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, team.getProjectId());
+            statement.setString(2, studentId);
+            statement.executeUpdate();
+        } catch (SQLException throwables) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void validateAvailability(String studentId) throws InvalidMemberException {
-        for (Team team : teams.values()) {
-            Set<String> studentIds = team.getStudentIds();
-            if (studentIds.contains(studentId)) {
-                throw new InvalidMemberException(studentId);
+        Connection connection = DBHelper.connection();
+        boolean available = false;
+        try {
+            String sql = "SELECT teamId FROM students WHERE student.id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, studentId);
+            ResultSet result = statement.executeQuery();
+            if (result.next()) {
+                String teamId = result.getString("teamId");
+                if (teamId == null) {
+                    available = true;
+                }
             }
+        } catch (Exception e) {
+            try {
+                connection.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+
         }
+        if (!available) {
+            throw new InvalidMemberException(studentId);
+        }
+
     }
 
     public void validateConflict(String s1, String s2, String s3, String s4) throws StudentConflictException {
@@ -134,7 +210,8 @@ public class TeamManager {
 
     }
 
-    public void validatePersonalityImbalance(String s1, String s2, String s3, String s4) throws PersonalityImbalanceException {
+    public void validatePersonalityImbalance(String s1, String s2, String s3, String s4) throws
+            PersonalityImbalanceException {
 
         Student student1 = studentManager.getStudentById(s1);
         Student student2 = studentManager.getStudentById(s2);
@@ -217,7 +294,7 @@ public class TeamManager {
     }
 
     public TechnicalSkillCategories averageTechnicalSkill(String projectId) {
-        Team team = this.teams.get(projectId);
+        Team team = this.getTeamByProjectId(projectId);
         Set<String> studentIds = team.getStudentIds();
 
         double p = 0;
@@ -266,7 +343,7 @@ public class TeamManager {
     }
 
     public double satisfactoryPercentage(String projectId) {
-        Team team = this.teams.get(projectId);
+        Team team = this.getTeamByProjectId(projectId);
         Set<String> studentIds = team.getStudentIds();
 
         int satisfactorySum = 0;
@@ -291,7 +368,7 @@ public class TeamManager {
     }
 
     public double overallAverageCompetencyLevel(String projectId) {
-        Team team = this.teams.get(projectId);
+        Team team = this.getTeamByProjectId(projectId);
         Set<String> studentIds = team.getStudentIds();
 
         double sum = 0;
@@ -310,7 +387,7 @@ public class TeamManager {
 
         ArrayList<Double> percentages = new ArrayList<>();
 
-        for (Team t : this.teams.values()) {
+        for (Team t : this.getAllTeams()) {
 
             percentages.add(satisfactoryPercentage(t.getProjectId()));
 
@@ -323,7 +400,7 @@ public class TeamManager {
 
         ArrayList<Double> shortFalls = new ArrayList<>();
 
-        for (Team t : this.teams.values()) {
+        for (Team t : this.getAllTeams()) {
             shortFalls.add(skillShortfall(t.getProjectId()));
         }
 
@@ -337,7 +414,7 @@ public class TeamManager {
         ArrayList<Double> ns = new ArrayList<>();
         ArrayList<Double> as = new ArrayList<>();
 
-        for (Team t : this.teams.values()) {
+        for (Team t : this.getAllTeams()) {
 
             TechnicalSkillCategories skills = this.averageTechnicalSkill(t.getProjectId());
 
@@ -361,18 +438,47 @@ public class TeamManager {
     public double standardDeviationForOverallSkillCompetency() {
         ArrayList<Double> competencies = new ArrayList<>();
 
-        for (Team t : this.teams.values()) {
+        for (Team t : this.getAllTeams()) {
             competencies.add(overallAverageCompetencyLevel(t.getProjectId()));
         }
         return Utils.standardDeviation(competencies);
     }
 
     public boolean areAllTeamFormed() {
-        return teams.size() == projectManager.getAllProject().size();
+        Collection<Team> allTeams = getAllTeams();
+        if (allTeams.size() != projectManager.getAllProject().size()) {
+            return false;
+        }
+        for (Team t : allTeams) {
+            if (t.getStudentIds().size() != 4) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Collection<Team> getAllTeams() {
-        return teams.values();
+
+        Connection connection = DBHelper.connection();
+        ArrayList<Team> teams = new ArrayList<>();
+        try {
+            String sql = "SELECT project_id FROM teams";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet result = statement.executeQuery();
+            while (result.next()) {
+                String projectId = result.getString("project_id");
+                Team team = this.getTeamByProjectId(projectId);
+                teams.add(team);
+            }
+
+        } catch (SQLException err) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return teams;
     }
 
     public void swapStudent(String studentA, String projectA, String studentB, String projectB) throws Exception {
@@ -384,14 +490,22 @@ public class TeamManager {
         if (!teamB.getStudentIds().contains(studentB)) {
             throw new Exception("Student " + studentB + " is not in " + projectB);
         }
+        Connection connection = DBHelper.connection();
 
-        teamA.getStudentIds().remove(studentA);
-        teamA.getStudentIds().add(studentB);
+        try{
+            String sql = "UPDATE students SET teamId = ? WHERE student.id = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1,projectA);
+            statement.setString(2,studentB);
+            statement.executeUpdate();
 
-        teamB.getStudentIds().remove(studentB);
-        teamB.getStudentIds().add(studentA);
+            statement=connection.prepareStatement(sql);
+            statement.setString(1,projectB);
+            statement.setString(2,studentA);
+        }catch (SQLException err){
+            err.printStackTrace();
+        }
 
-        saveTeamsToFile();
     }
 }
 
