@@ -412,7 +412,7 @@ public class MainMenu {
             }
 
         }
-        DataEntryPoint.getInstance().studentPreferenceManager.saveToFile();
+     //   DataEntryPoint.getInstance().studentPreferenceManager.saveToFile();
         return preferenceAnalyze;
     }
 

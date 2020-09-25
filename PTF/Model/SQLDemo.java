@@ -109,24 +109,24 @@ public class SQLDemo {
         connection.close();
     }
 
-    public static void insertStudentPreferences() throws SQLException {
-        StudentPreferenceManager studentPreferenceManager = DataEntryPoint.getInstance().studentPreferenceManager;
-        HashMap<String, TreeSet<StudentPreference>> pos = studentPreferenceManager.getAllPreferences();
-
-        Connection connection = DBHelper.connection();
-        for (String studentId : pos.keySet()) {
-            TreeSet<StudentPreference> preferences = pos.get(studentId);
-            for (StudentPreference p : preferences) {
-                String sql = "INSERT INTO student_preferences(student_id,project_id,grade)VALUES(?,?,?)";
-                PreparedStatement statement = connection.prepareStatement(sql);
-                statement.setString(1, studentId);
-                statement.setString(2, p.getProjectId());
-                statement.setInt(3, p.getGrade());
-                statement.executeUpdate();
-            }
-        }
-        connection.close();
-    }
+//    public static void insertStudentPreferences() throws SQLException {
+//        StudentPreferenceManager studentPreferenceManager = DataEntryPoint.getInstance().studentPreferenceManager;
+//        HashMap<String, TreeSet<StudentPreference>> pos = studentPreferenceManager.getAllPreferences();
+//
+//        Connection connection = DBHelper.connection();
+//        for (String studentId : pos.keySet()) {
+//            TreeSet<StudentPreference> preferences = pos.get(studentId);
+//            for (StudentPreference p : preferences) {
+//                String sql = "INSERT INTO student_preferences(student_id,project_id,grade)VALUES(?,?,?)";
+//                PreparedStatement statement = connection.prepareStatement(sql);
+//                statement.setString(1, studentId);
+//                statement.setString(2, p.getProjectId());
+//                statement.setInt(3, p.getGrade());
+//                statement.executeUpdate();
+//            }
+//        }
+//        connection.close();
+//    }
 
     public static void insertTeams() throws SQLException {
         TeamManager teamManager = DataEntryPoint.getInstance().teamManager;

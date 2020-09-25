@@ -73,7 +73,7 @@ public class TeamManager {
         this.teams.put(team.getProjectId(), team);
     }
 
-    public void addStudentToTeam(String studentId,Team team) throws IOException {
+    public void addStudentToTeam(String studentId, Team team) throws IOException {
         team.addStudent(studentId);
         saveTeamsToFile();
 
@@ -113,19 +113,20 @@ public class TeamManager {
             }
         }
     }
-    public void validateConflict(Team team,String newStudentId) throws StudentConflictException {
-        HashSet<String> allIds=new HashSet<>(team.getStudentIds());
+
+    public void validateConflict(Team team, String newStudentId) throws StudentConflictException {
+        HashSet<String> allIds = new HashSet<>(team.getStudentIds());
         allIds.add(newStudentId);
-        List<Student> allStudents= allIds.stream().map((id) -> studentManager.getStudentById(id)).
+        List<Student> allStudents = allIds.stream().map((id) -> studentManager.getStudentById(id)).
                 collect(Collectors.toList());
-        for (Student student:allStudents){
-            ArrayList<String> conflicts=student.getNoMatchPeople();
-            if(conflicts==null){
+        for (Student student : allStudents) {
+            ArrayList<String> conflicts = student.getNoMatchPeople();
+            if (conflicts == null) {
                 continue;
             }
-            for(String cId:conflicts){
-                if(allIds.contains(cId)){
-                    throw new StudentConflictException(student.getStudentID(),cId);
+            for (String cId : conflicts) {
+                if (allIds.contains(cId)) {
+                    throw new StudentConflictException(student.getStudentID(), cId);
                 }
             }
 
@@ -165,8 +166,9 @@ public class TeamManager {
 
         }
     }
-    public void validateRepeatedMember(Team team,String newStudentId) throws RepeatedMemberException {
-        if(team.getStudentIds().contains(newStudentId)){
+
+    public void validateRepeatedMember(Team team, String newStudentId) throws RepeatedMemberException {
+        if (team.getStudentIds().contains(newStudentId)) {
             throw new RepeatedMemberException();
         }
     }
@@ -205,9 +207,10 @@ public class TeamManager {
 
         }
     }
+
     public void validateStudentId(String newStudentId) throws StudentNotFoundException {
-        Student student= studentManager.getStudentById(newStudentId);
-        if(student ==null){
+        Student student = studentManager.getStudentById(newStudentId);
+        if (student == null) {
             throw new StudentNotFoundException(newStudentId);
         }
 
@@ -268,7 +271,7 @@ public class TeamManager {
 
         int satisfactorySum = 0;
         for (String studentId : studentIds) {
-            TreeSet<StudentPreference> preferences = this.preferenceManager.getPreferencesByStudentId(studentId);
+            Collection<StudentPreference> preferences = this.preferenceManager.getPreferencesByStudentId(studentId);
             if (preferences == null) {
                 continue;
             }
