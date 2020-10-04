@@ -56,7 +56,7 @@ public class TeamManager {
 //            for (String s : t.getStudentIds()) {
 //                sb.append(s).append(" ");
 //            }
-////            sb.append(String.join(" ",t.getStudentIds()));
+//           sb.append(String.join(" ",t.getStudentIds()));
 //
 //            //Write information about Project on the files
 //            bufferedWriter.write(sb.toString());
@@ -493,7 +493,7 @@ public class TeamManager {
         Connection connection = DBHelper.connection();
 
         try{
-            String sql = "UPDATE students SET teamId = ? WHERE student.id = ?";
+            String sql = "UPDATE students SET teamId = ? WHERE students.id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1,projectA);
             statement.setString(2,studentB);
@@ -502,6 +502,7 @@ public class TeamManager {
             statement=connection.prepareStatement(sql);
             statement.setString(1,projectB);
             statement.setString(2,studentA);
+            statement.executeUpdate();
         }catch (SQLException err){
             err.printStackTrace();
         }

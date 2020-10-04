@@ -114,8 +114,7 @@ public class MainSceneController implements Initializable {
             refreshMetrics();
 
         } catch (Exception e) {
-            String message = e.getMessage();
-            Alert alert = new Alert(Alert.AlertType.NONE, "you should selected two student", ButtonType.OK);
+            e.printStackTrace();
         }
     }
 
