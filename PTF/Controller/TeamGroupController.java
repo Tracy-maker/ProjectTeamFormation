@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -62,7 +63,7 @@ public class TeamGroupController implements Initializable {
 
         team.getStudentIds();
 
-        Set<String> studentIds = team.getStudentIds();
+        Collection<String> studentIds = team.getStudentIds();
         ArrayList<String> idArray = new ArrayList<>(studentIds);
         for (int i = 0; i < studentIds.size(); i++) {
             String studentId = idArray.get(i);

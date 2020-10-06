@@ -72,5 +72,6 @@
       <TextField fx:id="addStudentIdTextField" layoutX="195.0" layoutY="309.0" maxWidth="1.7976931348623157E308" prefHeight="27.0" AnchorPane.leftAnchor="195.0" AnchorPane.topAnchor="309.0" />
       <Button layoutX="384.0" layoutY="311.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleAdd" prefHeight="27.0" text="Add" AnchorPane.leftAnchor="384.0" AnchorPane.topAnchor="311.0" />
       <Button layoutX="857.0" layoutY="308.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleSwap" prefHeight="27.0" text="Swap" AnchorPane.rightAnchor="215.0" AnchorPane.topAnchor="308.0" />
+      <Button layoutX="951.0" layoutY="308.0" mnemonicParsing="false" onAction="#handleRecommend" text="Recommend" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="308.0" />
    </children>
 </AnchorPane>

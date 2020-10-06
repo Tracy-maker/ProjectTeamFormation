@@ -4,11 +4,11 @@ import java.util.*;
 
 public class Team {
     private String projectId;
-    private HashSet<String> studentIds;
+    private ArrayList<String> studentIds;
 
     public Team(String projectId, String student1, String student2, String student3, String student4) {
         this.projectId = projectId;
-        this.studentIds = new HashSet<String>();
+        this.studentIds = new ArrayList<String>();
         this.studentIds.add(student1);
         this.studentIds.add(student2);
         this.studentIds.add(student3);
@@ -18,8 +18,9 @@ public class Team {
 
     public Team(String projectId, List<String> studentIds) {
         this.projectId=projectId;
-        this.studentIds=new HashSet<String>(studentIds);
+        this.studentIds=new ArrayList<String>(studentIds);
     }
+
 //pro 01 02 03 04
 
     public static Team fromString(String line) {
@@ -39,12 +40,12 @@ public class Team {
         this.projectId = projectId;
     }
 
-    public Set<String> getStudentIds() {
+    public List<String> getStudentIds() {
         return studentIds;
     }
 
-    public void setStudentIds(Set<String> studentIds) {
-        this.studentIds = (HashSet<String>) studentIds;
+    public void setStudentIds(Collection<String> studentIds) {
+        this.studentIds = new ArrayList<> (studentIds);
     }
 
     public void addStudent(String studentId){

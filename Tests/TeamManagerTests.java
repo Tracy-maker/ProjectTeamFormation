@@ -9,9 +9,16 @@ import PTF.Manager.StudentManager;
 import PTF.Manager.StudentPreferenceManager;
 import PTF.Manager.TeamManager;
 import PTF.Model.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 
 
@@ -22,13 +29,18 @@ public class TeamManagerTests {
     @Before
     public void setUp() throws Exception {
 
+        File emptyDatabase = new File("assignmentTeamProjectCopy.sqlite");
+        File testDatabase = new File("assignmentTeamProjectTest.sqlite");
+        Files.copy(emptyDatabase.toPath(), testDatabase.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        DBHelper.url = "jdbc:sqlite:assignmentTeamProjectTest.sqlite";
 
         ArrayList<String> conflictS1 = new ArrayList<>();
         conflictS1.add("S2");
         Student s1 = new Student("S1",
                 new TechnicalSkillCategories(4, 3, 2, 1), "A", conflictS1);
         Student s2 = new Student("S2",
-                new TechnicalSkillCategories(1, 3, 2, 4), "A", null);
+                new TechnicalSkillCategories(1, 3, 2, 4), "A", new ArrayList<>());
 
         ArrayList<String> conflictS2 = new ArrayList<>();
         conflictS2.add("S1");
@@ -39,7 +51,7 @@ public class TeamManagerTests {
         Student s5 = new Student("S5",
                 new TechnicalSkillCategories(4, 4, 4, 4), "C", new ArrayList<>());
         Student s6 = new Student("S6",
-                new TechnicalSkillCategories(4, 3, 2, 1), "B", null);
+                new TechnicalSkillCategories(4, 3, 2, 1), "B", new ArrayList<>());
 
         StudentManager studentManager = new StudentManager();
         studentManager.addStudent(s1);
@@ -55,23 +67,33 @@ public class TeamManagerTests {
         ProjectManager projectManager = new ProjectManager();
         projectManager.addProject(project);
 
-        StudentPreferenceManager preferenceManager=new StudentPreferenceManager();
-        preferenceManager.addPreference("S1",new StudentPreference("proj1",2));
-        preferenceManager.addPreference("S1",new StudentPreference("proj2",4));
-        preferenceManager.addPreference("S1",new StudentPreference("proj4",1));
+        StudentPreferenceManager preferenceManager = new StudentPreferenceManager();
+        preferenceManager.addPreference("S1", new StudentPreference("proj1", 2));
+        preferenceManager.addPreference("S1", new StudentPreference("proj2", 4));
+        preferenceManager.addPreference("S1", new StudentPreference("proj4", 1));
 
-        preferenceManager.addPreference("S3",new StudentPreference("proj1",3));
-        preferenceManager.addPreference("S3",new StudentPreference("proj2",2));
-        preferenceManager.addPreference("S1",new StudentPreference("proj4",1));
-        preferenceManager.addPreference("S1",new StudentPreference("proj5",1));
+        preferenceManager.addPreference("S3", new StudentPreference("proj1", 3));
+        preferenceManager.addPreference("S3", new StudentPreference("proj2", 2));
+        preferenceManager.addPreference("S1", new StudentPreference("proj5", 1));
 
-        preferenceManager.addPreference("S4",new StudentPreference("proj2",2));
-        preferenceManager.addPreference("S4",new StudentPreference("proj3",1));
-        preferenceManager.addPreference("S5",new StudentPreference("proj4",4));
-        preferenceManager.addPreference("S5",new StudentPreference("proj2",4));
-        preferenceManager.addPreference("S6",new StudentPreference("proj5",2));
+        preferenceManager.addPreference("S4", new StudentPreference("proj2", 2));
+        preferenceManager.addPreference("S4", new StudentPreference("proj3", 1));
+        preferenceManager.addPreference("S5", new StudentPreference("proj4", 4));
+        preferenceManager.addPreference("S5", new StudentPreference("proj2", 4));
+        preferenceManager.addPreference("S6", new StudentPreference("proj5", 2));
 
-        this.teamManager = new TeamManager(studentManager, projectManager,preferenceManager );
+        this.teamManager = new TeamManager(studentManager, projectManager, preferenceManager);
+    }
+
+    @After
+    public void after(){
+        File testDatabase=new File("assignmentTeamProjectTest.sqlite");
+        try{
+            Files.delete(testDatabase.toPath());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -134,13 +156,13 @@ public class TeamManagerTests {
         teamManager.addTeam(t);
         //   p:2.5 n:2.25 a:2.25 w:1.75
         //    1.5+0.75
-        assertEquals (2.25,teamManager.skillShortfall("proj1"), 0.001);
+        assertEquals(2.25, teamManager.skillShortfall("proj1"), 0.001);
     }
 
     @Test
-    public void testSatisfactoryPercentage(){
-        Team t=new Team("proj1","S1","S2","S3","S4");
+    public void testSatisfactoryPercentage() {
+        Team t = new Team("proj1", "S1", "S2", "S3", "S4");
         teamManager.addTeam(t);
-        assertEquals(0.5, teamManager.satisfactoryPercentage("proj1"),0.001);
+        assertEquals(0.5, teamManager.satisfactoryPercentage("proj1"), 0.001);
     }
 }

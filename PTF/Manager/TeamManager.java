@@ -295,7 +295,12 @@ public class TeamManager {
 
     public TechnicalSkillCategories averageTechnicalSkill(String projectId) {
         Team team = this.getTeamByProjectId(projectId);
-        Set<String> studentIds = team.getStudentIds();
+        return averageTechnicalSkill(team);
+    }
+
+    public TechnicalSkillCategories averageTechnicalSkill(Team team) {
+
+        Collection<String> studentIds = team.getStudentIds();
 
         double p = 0;
         double w = 0;
@@ -322,6 +327,12 @@ public class TeamManager {
 
 
     public double skillShortfall(String projectId) {
+        Team team = this.getTeamByProjectId(projectId);
+        return skillShortFall(team);
+    }
+
+    public double skillShortFall(Team team) {
+        String projectId = team.getProjectId();
         Project project = projectManager.findProjectById(projectId);
         TechnicalSkillCategories requireSkills = project.getTechnicalSkillCategories();
         TechnicalSkillCategories averageSkills = this.averageTechnicalSkill(projectId);
@@ -344,7 +355,11 @@ public class TeamManager {
 
     public double satisfactoryPercentage(String projectId) {
         Team team = this.getTeamByProjectId(projectId);
-        Set<String> studentIds = team.getStudentIds();
+        return satisfactoryPercentage(team);
+    }
+
+    public double satisfactoryPercentage(Team team) {
+        Collection<String> studentIds = team.getStudentIds();
 
         int satisfactorySum = 0;
         for (String studentId : studentIds) {
@@ -357,7 +372,7 @@ public class TeamManager {
             for (int i = 0; i < 2; i++) {
                 if (preferenceIterator.hasNext()) {
                     StudentPreference preference = preferenceIterator.next();
-                    if (preference.getProjectId().equals(projectId)) {
+                    if (preference.getProjectId().equals(team.getProjectId())) {
                         satisfactorySum++;
                         break;
                     }
@@ -369,7 +384,11 @@ public class TeamManager {
 
     public double overallAverageCompetencyLevel(String projectId) {
         Team team = this.getTeamByProjectId(projectId);
-        Set<String> studentIds = team.getStudentIds();
+        return overallAverageCompetencyLevel(team);
+    }
+
+    public double overallAverageCompetencyLevel(Team team) {
+        Collection<String> studentIds = team.getStudentIds();
 
         double sum = 0;
         for (String id : studentIds) {
@@ -384,62 +403,72 @@ public class TeamManager {
     }
 
     public double standardDeviationForSatisfactoryPercentage() {
+        return standardDeviationForSatisfactoryPercentage(this.getAllTeams());
+    }
+
+    public double standardDeviationForSatisfactoryPercentage(Collection<Team> teams) {
 
         ArrayList<Double> percentages = new ArrayList<>();
 
-        for (Team t : this.getAllTeams()) {
-
-            percentages.add(satisfactoryPercentage(t.getProjectId()));
-
+        for (Team t : teams) {
+            percentages.add(satisfactoryPercentage(t));
         }
 
         return Utils.standardDeviation(percentages);
     }
 
     public double standardDeviationForShortfall() {
+        return standardDeviationForShortfall(this.getAllTeams());
+    }
+
+    public double standardDeviationForShortfall(Collection<Team> teams) {
 
         ArrayList<Double> shortFalls = new ArrayList<>();
 
-        for (Team t : this.getAllTeams()) {
-            shortFalls.add(skillShortfall(t.getProjectId()));
+        for (Team t : teams) {
+            shortFalls.add(skillShortFall(t));
         }
 
         return Utils.standardDeviation(shortFalls);
     }
 
-    public HashMap<String, Double> standardDeviationForSkillCompetency() {
-
-        ArrayList<Double> ws = new ArrayList<>();
-        ArrayList<Double> ps = new ArrayList<>();
-        ArrayList<Double> ns = new ArrayList<>();
-        ArrayList<Double> as = new ArrayList<>();
-
-        for (Team t : this.getAllTeams()) {
-
-            TechnicalSkillCategories skills = this.averageTechnicalSkill(t.getProjectId());
-
-            ws.add(skills.getWeb());
-            ps.add(skills.getProgramming());
-            ns.add(skills.getNetworking());
-            as.add(skills.getAnalytics());
-
-        }
-
-        HashMap<String, Double> result = new HashMap<>();
-
-        result.put("W", Utils.standardDeviation(ws));
-        result.put("P", Utils.standardDeviation(ps));
-        result.put("N", Utils.standardDeviation(ns));
-        result.put("A", Utils.standardDeviation(as));
-
-        return result;
-    }
+//    public HashMap<String, Double> standardDeviationForSkillCompetency() {
+//
+//        ArrayList<Double> ws = new ArrayList<>();
+//        ArrayList<Double> ps = new ArrayList<>();
+//        ArrayList<Double> ns = new ArrayList<>();
+//        ArrayList<Double> as = new ArrayList<>();
+//
+//        for (Team t : this.getAllTeams()) {
+//
+//            TechnicalSkillCategories skills = this.averageTechnicalSkill(t.getProjectId());
+//
+//            ws.add(skills.getWeb());
+//            ps.add(skills.getProgramming());
+//            ns.add(skills.getNetworking());
+//            as.add(skills.getAnalytics());
+//
+//        }
+//
+//        HashMap<String, Double> result = new HashMap<>();
+//
+//        result.put("W", Utils.standardDeviation(ws));
+//        result.put("P", Utils.standardDeviation(ps));
+//        result.put("N", Utils.standardDeviation(ns));
+//        result.put("A", Utils.standardDeviation(as));
+//
+//        return result;
+//    }
 
     public double standardDeviationForOverallSkillCompetency() {
+        return standardDeviationForOverallSkillCompetency(this.getAllTeams());
+    }
+
+    public double standardDeviationForOverallSkillCompetency(Collection<Team> teams) {
         ArrayList<Double> competencies = new ArrayList<>();
 
-        for (Team t : this.getAllTeams()) {
-            competencies.add(overallAverageCompetencyLevel(t.getProjectId()));
+        for (Team t : teams) {
+            competencies.add(overallAverageCompetencyLevel(t));
         }
         return Utils.standardDeviation(competencies);
     }
@@ -492,20 +521,59 @@ public class TeamManager {
         }
         Connection connection = DBHelper.connection();
 
-        try{
+        try {
             String sql = "UPDATE students SET teamId = ? WHERE students.id = ?";
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1,projectA);
-            statement.setString(2,studentB);
+            statement.setString(1, projectA);
+            statement.setString(2, studentB);
             statement.executeUpdate();
 
-            statement=connection.prepareStatement(sql);
-            statement.setString(1,projectB);
-            statement.setString(2,studentA);
+            statement = connection.prepareStatement(sql);
+            statement.setString(1, projectB);
+            statement.setString(2, studentA);
             statement.executeUpdate();
-        }catch (SQLException err){
-            err.printStackTrace();
+        } catch (SQLException throwables) {
+            try {
+                connection.close();
+            } catch (SQLException err) {
+                err.printStackTrace();
+            }
+
         }
+
+    }
+
+    public void reassignTeam(Collection<Team> teams) throws Exception {
+        for (Team t : teams) {
+            List<String> studentIds = t.getStudentIds();
+
+            String s1 = studentIds.get(0);
+            String s2 = studentIds.get(1);
+            String s3 = studentIds.get(2);
+            String s4 = studentIds.get(3);
+
+            this.validateConflict(s1, s2, s3, s4);
+            this.validateNoLeader(s1, s2, s3, s4);
+            this.validatePersonalityImbalance(s1, s2, s3, s4);
+            this.validateRepeatedMember(s1, s2, s3, s4);
+        }
+        Connection connection = DBHelper.connection();
+
+        try {
+            for (Team t : teams) {
+                List<String> students = t.getStudentIds();
+                String sql = "UPDATE students SET teamId = ? WHERE students.id IN ?";
+                PreparedStatement statement =connection.prepareStatement(sql);
+                statement.setString(1,t.getProjectId());
+            }
+        } catch (SQLException throwables) {
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
 
     }
 }

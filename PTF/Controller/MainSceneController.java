@@ -1,17 +1,25 @@
 package PTF.Controller;
 
 import PTF.DataEntryPoint;
+import PTF.MainGUI;
 import PTF.Manager.TeamManager;
 import PTF.Model.Team;
 import PTF.Model.TechnicalSkillCategories;
+import PTF.Recommender;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -95,26 +103,51 @@ public class MainSceneController implements Initializable {
         teamGroup4Controller.clearSection();
         teamGroup5Controller.clearSection();
 
-
         if (selectedIds.size() != 2) {
             Alert alert = new Alert(Alert.AlertType.NONE, "you should selected two student", ButtonType.OK);
             alert.show();
             return;
         }
-
         try {
+            TeamManager teamManager = DataEntryPoint.getInstance().teamManager;
             String studentAId = selectedIds.get(0);
             String studentBId = selectedIds.get(1);
-
             String projAId = selectedProjId.get(0);
             String projBId = selectedProjId.get(1);
-            DataEntryPoint.getInstance().teamManager.swapStudent(studentAId, projAId, studentBId, projBId);
 
+            // --- validate the new team ---
+
+            // Get original students of projects
+
+            Team projATeam = teamManager.getTeamByProjectId(projAId);
+            Team projBTeam = teamManager.getTeamByProjectId(projBId);
+            ArrayList<String> teamAStudents = new ArrayList<>(projATeam.getStudentIds());
+            ArrayList<String> teamBStudents = new ArrayList<>(projBTeam.getStudentIds());
+
+            // Swap locally
+
+            teamAStudents.remove(studentAId);
+            teamAStudents.add(studentBId);
+            teamBStudents.remove(studentBId);
+            teamBStudents.add(studentAId);
+            teamManager.validateConflict(teamAStudents.get(0), teamAStudents.get(1), teamAStudents.get(2), teamAStudents.get(3));
+            teamManager.validateNoLeader(teamAStudents.get(0), teamAStudents.get(1), teamAStudents.get(2), teamAStudents.get(3));
+            teamManager.validatePersonalityImbalance(teamAStudents.get(0), teamAStudents.get(1), teamAStudents.get(2), teamAStudents.get(3));
+            teamManager.validateRepeatedMember(teamAStudents.get(0), teamAStudents.get(1), teamAStudents.get(2), teamAStudents.get(3));
+            teamManager.validateConflict(teamBStudents.get(0), teamBStudents.get(1), teamBStudents.get(2), teamBStudents.get(3));
+            teamManager.validateNoLeader(teamBStudents.get(0), teamBStudents.get(1), teamBStudents.get(2), teamBStudents.get(3));
+            teamManager.validatePersonalityImbalance(teamBStudents.get(0), teamBStudents.get(1), teamBStudents.get(2), teamBStudents.get(3));
+            teamManager.validateRepeatedMember(teamBStudents.get(0), teamBStudents.get(1), teamBStudents.get(2), teamBStudents.get(3));
+
+            // ---- validate end ----
+
+            DataEntryPoint.getInstance().teamManager.swapStudent(studentAId, projAId, studentBId, projBId);
             refreshTeamBoxes();
             refreshMetrics();
-
         } catch (Exception e) {
-            e.printStackTrace();
+            String message = e.getMessage();
+            Alert alert = new Alert(Alert.AlertType.NONE, message, ButtonType.OK);
+            alert.show();
         }
     }
 
@@ -165,6 +198,23 @@ public class MainSceneController implements Initializable {
             alert.show();
 
         }
+
+    }
+
+    @FXML
+    private void handleRecommend() throws IOException {
+        FXMLLoader loader =new FXMLLoader(MainGUI.class.getResource("recommendScene.fxml"));
+        Parent parent=loader.load();
+        RecommendController recommendController =loader.getController();
+
+        Scene scene = new Scene(parent,408,251);
+        Stage stage = new Stage();
+        recommendController.setStage(stage);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.showAndWait();
+
+
 
     }
 
