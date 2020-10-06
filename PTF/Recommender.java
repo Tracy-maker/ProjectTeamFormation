@@ -46,9 +46,11 @@ public class Recommender {
         double minLoss = loss(initialState);
         List<Team> bestState = initialState;
 
+       Stack<Tuple<List<Team>,Integer>> priorityQueue=new Stack<>();
+
         // Best first, (State, depth)
-        PriorityQueue<Tuple<List<Team>, Integer>> priorityQueue
-                = new PriorityQueue<>((state1, state2) -> (int) Math.ceil(loss(state1.a) - loss(state2.a)));
+//        PriorityQueue<Tuple<List<Team>, Integer>> priorityQueue
+//                = new PriorityQueue<>((state1, state2) -> (int) Math.ceil(loss(state1.a) - loss(state2.a)));
         priorityQueue.add(new Tuple<>(initialState, 1));
         visitedTags.add(stateTag(initialState));
 
@@ -60,7 +62,7 @@ public class Recommender {
                 return null;
             }
 
-            Tuple<List<Team>, Integer> stateTuple = priorityQueue.poll();
+            Tuple<List<Team>, Integer> stateTuple = priorityQueue.pop();
             List<Team> state = stateTuple.a;
             int depth = stateTuple.b;
             double loss = loss(state);
@@ -72,7 +74,7 @@ public class Recommender {
             }
 
             // Expand but cap the max depth
-            if (depth < 2) {
+            if (depth < 6) {
                 List<List<Team>> expanded = expand(state);
                 System.out.println("depth: "+depth);
                 for (List<Team> newState : expanded) {
@@ -189,4 +191,5 @@ public class Recommender {
             System.out.println(String.join(",", t.getStudentIds()));
         }
     }
+
 }

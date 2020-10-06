@@ -207,9 +207,10 @@ public class MainSceneController implements Initializable {
         Parent parent=loader.load();
         RecommendController recommendController =loader.getController();
 
-        Scene scene = new Scene(parent,408,251);
+        Scene scene = new Scene(parent,410,250);
         Stage stage = new Stage();
         recommendController.setStage(stage);
+        recommendController.setParent(this);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.showAndWait();
@@ -218,7 +219,7 @@ public class MainSceneController implements Initializable {
 
     }
 
-    private void refreshTeamBoxes() {
+    public void refreshTeamBoxes() {
         Collection<Team> teams = DataEntryPoint.getInstance().teamManager.getAllTeams();
         ArrayList<Team> teamArray = new ArrayList<>(teams);
 
@@ -240,7 +241,7 @@ public class MainSceneController implements Initializable {
 
     }
 
-    private void refreshMetrics() {
+    public void refreshMetrics() {
 
         drawSatisfactoryChart();
 

@@ -32,6 +32,10 @@ public class RecommendController implements Initializable {
 
     private Stage stage;
 
+    private Collection<Team>result;
+
+    private MainSceneController parentController;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -53,13 +57,21 @@ public class RecommendController implements Initializable {
     public void setStage(Stage stage){
         this.stage=stage;
         stage.setOnCloseRequest((event -> {
-            System.out.println("Stage close");
+            currentThread.interrupt();
         }));
+    }
+
+    public void setParent(MainSceneController parent){
+        this.parentController = parent;
+
     }
 
 
     private void handleResult(Collection<Team> result) {
+        this.result=result;
+
         applyButton.setDisable(false);
+
         contentBox.getChildren().remove(progressIndicator);
 
         if(result!=null){
@@ -83,4 +95,19 @@ public class RecommendController implements Initializable {
         currentThread.interrupt();
         stage.close();
     }
+
+    @FXML
+    private void handleApply(){
+        try {
+            DataEntryPoint.getInstance().teamManager.reassignTeam(result);
+            if(parentController != null){
+                parentController.refreshMetrics();
+                parentController.refreshTeamBoxes();
+            }
+            stage.close();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
 }

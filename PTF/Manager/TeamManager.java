@@ -557,14 +557,27 @@ public class TeamManager {
             this.validatePersonalityImbalance(s1, s2, s3, s4);
             this.validateRepeatedMember(s1, s2, s3, s4);
         }
+
         Connection connection = DBHelper.connection();
 
         try {
             for (Team t : teams) {
-                List<String> students = t.getStudentIds();
-                String sql = "UPDATE students SET teamId = ? WHERE students.id IN ?";
+                List<String> studentIds = t.getStudentIds();
+
+                StringBuilder builder=new StringBuilder();
+                for (int i = 0; i < studentIds.size(); i++) {
+                    builder.append("?,");
+                }
+
+                builder.deleteCharAt(builder.length()-1);
+
+                String sql = "UPDATE students SET teamId = ? WHERE students.id IN ("+builder.deleteCharAt(builder.length()-1).toString()+")";
                 PreparedStatement statement =connection.prepareStatement(sql);
                 statement.setString(1,t.getProjectId());
+                for (int i = 2; i < studentIds.size(); i++) {
+                    statement.setString(i,studentIds.get(i-2));
+                }
+                statement.executeUpdate();
             }
         } catch (SQLException throwables) {
             try {
