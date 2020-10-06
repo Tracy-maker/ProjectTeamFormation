@@ -169,7 +169,7 @@ public class Recommender {
     private String stateTag(List<Team> state) {
         // Form a unique tag to identify a state
         // pr1s1s2s3s4pr2s5s7s8s9pr3s6s10
-        state.sort((t1, t2) -> t1.getProjectId().compareTo(t2.getProjectId()));
+        state.sort(Comparator.comparing(Team::getProjectId));
         StringBuilder sb = new StringBuilder();
         for (Team t : state) {
             sb.append(t.getProjectId());
