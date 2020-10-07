@@ -10,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -32,7 +31,7 @@ public class RecommendController implements Initializable {
 
     private Stage stage;
 
-    private Collection<Team>result;
+    private Collection<Team> result;
 
     private MainSceneController parentController;
 
@@ -44,9 +43,9 @@ public class RecommendController implements Initializable {
             Recommender recommender = new Recommender(DataEntryPoint.getInstance().teamManager);
             try {
                 Collection<Team> result = recommender.recommend();
-                Platform.runLater(()->{
+                Platform.runLater(() -> {
                     handleResult(result);
-            });
+                });
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
@@ -54,27 +53,27 @@ public class RecommendController implements Initializable {
         currentThread.start();
     }
 
-    public void setStage(Stage stage){
-        this.stage=stage;
+    public void setStage(Stage stage) {
+        this.stage = stage;
         stage.setOnCloseRequest((event -> {
             currentThread.interrupt();
         }));
     }
 
-    public void setParent(MainSceneController parent){
+    public void setParent(MainSceneController parent) {
         this.parentController = parent;
 
     }
 
 
     private void handleResult(Collection<Team> result) {
-        this.result=result;
+        this.result = result;
 
         applyButton.setDisable(false);
 
         contentBox.getChildren().remove(progressIndicator);
 
-        if(result!=null){
+        if (result != null) {
             TextArea text = new TextArea();
             StringBuilder sb = new StringBuilder();
             sb.append("A better combination would be: \n");
@@ -97,10 +96,10 @@ public class RecommendController implements Initializable {
     }
 
     @FXML
-    private void handleApply(){
+    private void handleApply() {
         try {
             DataEntryPoint.getInstance().teamManager.reassignTeam(result);
-            if(parentController != null){
+            if (parentController != null) {
                 parentController.refreshMetrics();
                 parentController.refreshTeamBoxes();
             }
