@@ -571,7 +571,7 @@ public class TeamManager {
 
                 builder.deleteCharAt(builder.length()-1);
 
-                String sql = "UPDATE students SET teamId = ? WHERE students.id IN ("+builder.deleteCharAt(builder.length()-1).toString()+")";
+                String sql = "UPDATE students SET teamId = ? WHERE students.id IN ("+builder.toString()+")";
                 PreparedStatement statement =connection.prepareStatement(sql);
                 statement.setString(1,t.getProjectId());
                 for (int i = 2; i < studentIds.size(); i++) {
