@@ -46,11 +46,11 @@ public class Recommender {
         double minLoss = loss(initialState);
         List<Team> bestState = initialState;
 
-       Stack<Tuple<List<Team>,Integer>> priorityQueue=new Stack<>();
+//       Stack<Tuple<List<Team>,Integer>> priorityQueue=new Stack<>();
 
         // Best first, (State, depth)
-//        PriorityQueue<Tuple<List<Team>, Integer>> priorityQueue
-//                = new PriorityQueue<>((state1, state2) -> (int) Math.ceil(loss(state1.a) - loss(state2.a)));
+        PriorityQueue<Tuple<List<Team>, Integer>> priorityQueue
+                = new PriorityQueue<>((state1, state2) -> (int) Math.ceil(loss(state1.a) - loss(state2.a)));
         priorityQueue.add(new Tuple<>(initialState, 1));
         visitedTags.add(stateTag(initialState));
 
@@ -62,7 +62,7 @@ public class Recommender {
                 return null;
             }
 
-            Tuple<List<Team>, Integer> stateTuple = priorityQueue.pop();
+            Tuple<List<Team>, Integer> stateTuple = priorityQueue.poll();
             List<Team> state = stateTuple.a;
             int depth = stateTuple.b;
             double loss = loss(state);
@@ -78,14 +78,13 @@ public class Recommender {
                 List<List<Team>> expanded = expand(state);
                 System.out.println("depth: "+depth);
                 for (List<Team> newState : expanded) {
-                   boolean valid = isValid(newState);
                    boolean visited = visitedTags.contains(stateTag(newState));
-                    if (valid && !visited) {
+                    if (!visited) {
                         priorityQueue.add(new Tuple<>(newState, depth + 1));
                         visitedTags.add(stateTag(newState));
                         System.out.println("expanded");
                     }else{
-                        System.out.printf("valid: %b, not visited: %b\n",valid,!visited);
+                        System.out.printf("not visited: %b\n", false);
                     }
                 }
                 System.out.println(priorityQueue.size());
@@ -97,47 +96,56 @@ public class Recommender {
 
     public List<List<Team>> expand(List<Team> state) {
         // Find the team having the max/min skill shortfall from given state
-        Team maxT = state.get(0);
-        double maxShortfall = teamManager.skillShortFall(maxT);
-        Team minT = state.get(0);
-        double minShortFall = teamManager.skillShortFall(minT);
-        for (Team t : state) {
-            double shortFall = teamManager.skillShortFall(t);
-            if (shortFall > maxShortfall) {
-                maxShortfall = shortFall;
-                maxT = t;
-            }
-            if (shortFall < minShortFall) {
-                minShortFall = shortFall;
-                minT = t;
-            }
-        }
-        System.out.println("maxT: " + maxT.getProjectId());
-        System.out.println("minT: " + minT.getProjectId());
+
+        ArrayList<Team> sortedState = new ArrayList<>(state);
+        sortedState.sort((s1, s2) -> (int)Math.ceil((teamManager.skillShortFall(s1) - teamManager.skillShortFall(s2))));
 
         List<List<Team>> expandedStates = new ArrayList<>();
-        // Try to swap one person from team having max short fall to that having smallest short fall
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                // Remember to deep copy
-                ArrayList<Team> newState = new ArrayList<>(state);
-                newState.remove(maxT);
-                newState.remove(minT);
-                // Deep copy
-                List<String> studentsProjA = new ArrayList<>(maxT.getStudentIds());
-                List<String> studentsProjB = new ArrayList<>(minT.getStudentIds());
-                // Swap
-                String tmp = studentsProjA.get(i);
-                studentsProjA.set(i, studentsProjB.get(j));
-                studentsProjB.set(j, tmp);
-                // Construct new teams
-                Team t1 = new Team(maxT.getProjectId(), studentsProjA);
-                Team t2 = new Team(minT.getProjectId(), studentsProjB);
-                newState.add(t1);
-                newState.add(t2);
-                expandedStates.add(newState);
+
+        for (int worstPointer = sortedState.size() - 1; worstPointer > 0; worstPointer--) {
+            for (int bestPointer = 0; bestPointer < sortedState.size() - 1; bestPointer++) {
+                Team betterT = state.get(bestPointer);
+                Team minT = state.get(worstPointer);
+
+                System.out.println("maxT: " + betterT.getProjectId());
+                System.out.println("minT: " + minT.getProjectId());
+
+                expandedStates.clear();
+
+                // Try to swap one person from team having max short fall to that having smallest short fall
+                for (int i = 0; i < 4; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        // Remember to deep copy
+                        ArrayList<Team> newState = new ArrayList<>(state);
+                        newState.remove(betterT);
+                        newState.remove(minT);
+                        // Deep copy
+                        List<String> studentsProjA = new ArrayList<>(betterT.getStudentIds());
+                        List<String> studentsProjB = new ArrayList<>(minT.getStudentIds());
+                        // Swap
+                        String tmp = studentsProjA.get(i);
+                        studentsProjA.set(i, studentsProjB.get(j));
+                        studentsProjB.set(j, tmp);
+                        // Construct new teams
+                        Team t1 = new Team(betterT.getProjectId(), studentsProjA);
+                        Team t2 = new Team(minT.getProjectId(), studentsProjB);
+                        newState.add(t1);
+                        newState.add(t2);
+
+                        // See if it's valid
+                        if (isValid(newState)) {
+                            expandedStates.add(newState);
+                        }
+                    }
+                }
+
+                if (expandedStates.size() > 0) {
+                    break;
+                }
             }
         }
+
+
         return expandedStates;
     }
 
